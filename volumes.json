@@ -1,0 +1,161 @@
+{
+  "collection": {
+    "titre": "Les Carnets",
+    "sous_titre": "collection en 13 volumes",
+    "auteur": "Jérôme Agostini",
+    "archive": "https://lescarnets.fr",
+    "format": "210 × 210 mm, carré",
+    "methode": "Pages = croquis retenus + 8 pages liminaires et de fin, arrondi au multiple de 4. Règle simple appliquée uniformément aux 13 volumes pour qu'ils soient comparables — pas une promesse de maquette.",
+    "reserve_note": "Les croquis non retenus ne disparaissent pas : ils restent sur lescarnets.fr, qui est le lieu patrimonial complet. Les livres sont une sélection, pas un remplacement de l'archive.",
+    "avertissement": "Treize volumes, c'est beaucoup. La priorité reste le plaisir du projet : cinq ou six volumes forment déjà une collection qui a du sens. Ce chiffrage sert à savoir ce qui existe et combien ça pèse, pas à fixer un programme.",
+    "reserves": [
+      "Volume 9 (France hors Paris) est un patchwork de neuf lieux sans grand fil apparent — c'est celui où « chercher l'angle, pas la géographie » demandera le plus de travail. Possible qu'il n'existe pas comme un seul livre.",
+      "Volumes 10 à 13 sont à dominante très muette (58 à 83 % de croquis sans texte). Le compte de pages suppose une image par page ; un régime aussi silencieux peut légitimement se resserrer et faire un livre plus court, plus dense.",
+      "Le classement Roma → Mayotte (4 croquis) reste à corriger sur lescarnets.fr avant que le volume Océan Indien parte en sélection."
+    ]
+  },
+  "volumes": [
+    {
+      "n": 1, "slug": "soudan", "titre": "Soudan", "region": "Afrique",
+      "carnets": ["Soudan"], "retenus": 44, "pages": 52, "statut": "fait",
+      "resume": "Le pilote de la collection. Quarante-quatre croquis, aucun muet : le carnet le plus bavard du fonds, retenu en entier. C'est lui qui a fixé la grille, le format et le régime récit du reste de la collection.",
+      "notes": [], "sommaire": null
+    },
+    {
+      "n": 2, "slug": "rome", "titre": "Rome", "region": "Europe",
+      "carnets": ["Roma"], "exclure_fichiers": ["001_310810_NGouja.jpg", "002_020910_LacDziani.jpg", "003_020910_PlageDeMoya.jpg", "005_040910_IlotBambo.jpg"],
+      "retenus": 60, "pages": 68, "pages_reelle": "88–96",
+      "statut": "fait",
+      "angle": "Deux ans, un tramway, un marché",
+      "resume": "Rome vue depuis les points fixes d'un habitant : le tram 8 de Largo Argentina à Trastevere, le marché de Testaccio, les terrasses à espresso. Du 24 septembre 2012 au 25 septembre 2014, deux ans jour pour jour — le fonds ouvre et ferme tout seul.",
+      "sections": [
+        {"titre": "I — Tetti di Roma", "periode": "sept.–déc. 2012, l'arrivée", "bruts": 52, "retenus": "15"},
+        {"titre": "II — Testaccio, l'année pleine", "periode": "2013", "bruts": 99, "retenus": "26 + 1 planche collective"},
+        {"titre": "III — Un dernier", "periode": "jan.–sept. 2014, le départ", "bruts": 69, "retenus": "18"}
+      ],
+      "notes": [
+        "Classement corrigé : 4 croquis mahorais d'août-septembre 2010 étaient classés dans le carnet Roma. Une fois exclus, Roma est parfaitement propre — 220 croquis, aucun muet.",
+        "Le 12 janvier 2014, un café romain dessiné sous le titre « Haiti, Roma » fait le pont avec le volume 3. Un rapprochement déjà présent dans le fonds, avant l'idée de la collection."
+      ],
+      "sommaire": "rome-sommaire.md"
+    },
+    {
+      "n": 3, "slug": "haiti", "titre": "Haïti", "region": "Amériques",
+      "carnets": ["Port-au-Prince", "Haïti, du sud au Nord", "Grand-Anse, Haïti", "Jacmel, Haïti"],
+      "retenus": 55, "pages": 64, "pages_reelle": "88", "statut": "fait",
+      "angle": "Entre le bureau et le large",
+      "resume": "Dix-neuf mois en mission de reconstruction post-séisme : la tension entre le travail (Log Base, les tap-taps de Delmas, la ville en chantier) et les fuites vers une côte sud presque silencieuse, refermée par le grand tour du nord avant de rentrer.",
+      "sections": [
+        {"titre": "I — Le bureau et la rue", "periode": "Port-au-Prince, régime récit", "bruts": 88, "retenus": "24"},
+        {"titre": "II — Le large, en silence", "periode": "Jacmel + Grand-Anse, régime planches", "bruts": 53, "retenus": "15 textés + muets"},
+        {"titre": "III — Du sud au nord", "periode": "le grand tour final, régime récit", "bruts": 44, "retenus": "15"}
+      ],
+      "notes": [
+        "Livre à deux régimes, structurés en sections, jamais mêlés page à page : Port-au-Prince parle (densité 86 signes), Jacmel se tait (85 % muet).",
+        "Les 38 muets de Jacmel et Grand-Anse se choisissent à l'image, pas au texte. Le silence est le sujet de la section II."
+      ],
+      "sommaire": "haiti-sommaire.md"
+    },
+    {
+      "n": 4, "slug": "italies", "titre": "Italies hors Roma", "region": "Europe",
+      "carnets": ["Firenze", "Napoli e la Campania", "Venezia", "La Puglia", "Milano"],
+      "retenus": 50, "pages": 60, "statut": "à faire",
+      "resume": "Cinq villes, cinq carnets courts, tous de 2013-2014 sauf exception — et aucun croquis muet. Le taux de rétention le plus élevé de la collection après le Soudan : 83 % du gisement tient dans le livre.",
+      "notes": ["Aucun muet sur les 60 croquis : régime récit d'un bout à l'autre."],
+      "sommaire": null
+    },
+    {
+      "n": 5, "slug": "ocean-indien", "titre": "Océan Indien", "region": "Afrique",
+      "carnets": ["Mayotte", "La Réunion", "Zanzibar", "Ile Maurice"],
+      "inclure_fichiers": ["001_310810_NGouja.jpg", "002_020910_LacDziani.jpg", "003_020910_PlageDeMoya.jpg", "005_040910_IlotBambo.jpg"],
+      "retenus": 55, "pages": 64, "statut": "à faire",
+      "resume": "Mayotte porte le volume ; La Réunion, Zanzibar et Maurice l'entourent. Un ensemble insulaire qui ne demande qu'un préalable : récupérer les quatre croquis mahorais mal classés dans Roma.",
+      "notes": ["Récupère les 4 croquis mahorais de 2010 mal classés dans le carnet Roma — à corriger sur lescarnets.fr avant la sélection."],
+      "sommaire": null
+    },
+    {
+      "n": 6, "slug": "caraibes", "titre": "Caraïbes hors Haïti", "region": "Amériques",
+      "carnets": ["Cuba", "Repùblica Dominicana"],
+      "retenus": 60, "pages": 68, "statut": "à faire",
+      "resume": "Cuba et la République Dominicaine, deux carnets de 2011-2012 contemporains du séjour haïtien. Le même bassin, le même moment, un autre regard : ici on passe, on ne travaille pas.",
+      "notes": [], "sommaire": null
+    },
+    {
+      "n": 7, "slug": "afrique-ouest", "titre": "Afrique de l'Ouest", "region": "Afrique",
+      "carnets": ["Burkina Faso", "Togo et Bénin", "Ghana", "Sénégal", "Mali"],
+      "retenus": 75, "pages": 84, "statut": "à faire",
+      "resume": "Le plus gros gisement après Rome et Haïti, étalé sur onze ans (2008-2019) et cinq pays. Le Burkina en est le socle, avec 70 croquis à lui seul.",
+      "notes": ["Régime planches : plus de la moitié du gisement est muette, la sélection se fera à l'image."],
+      "sommaire": null
+    },
+    {
+      "n": 8, "slug": "paris", "titre": "Paris", "region": "Europe",
+      "carnets": ["Paris", "Métro Parisien"],
+      "retenus": 55, "pages": 64, "statut": "à faire",
+      "resume": "La ville où l'on rentre entre deux départs, dessinée sur cinq ans. Deux tiers des croquis sont muets : c'est le volume le plus proche de l'album, et le plus proche de chez soi.",
+      "notes": [
+        "Régime planches, 65 % de muets.",
+        "Écart assumé avec collection-complete.md : le carnet « Métro Parisien » (4 croquis) y était compté dans le volume 9. Il est rendu ici à Paris, d'où les totaux 92 / 129 au lieu de 88 / 133."
+      ],
+      "sommaire": null
+    },
+    {
+      "n": 9, "slug": "france", "titre": "France hors Paris", "region": "Europe",
+      "carnets": ["Corsica", "France", "Lyon", "Genève", "Roussillon", "Bruxelles", "Vers Marseille", "Clermont-Ferrand"],
+      "retenus": 75, "pages": 84, "statut": "à faire",
+      "resume": "Huit carnets, de la Corse de 2002 à Marseille en 2013, en passant par Genève et Bruxelles qui ne sont pas la France. Le volume le plus éclaté du lot : sa géographie ne fait pas un livre, son angle reste à trouver.",
+      "notes": ["Très éclaté — c'est ici que « chercher l'angle, pas la géographie » demandera le plus de travail. Peut-être deux livres, peut-être aucun."],
+      "sommaire": null
+    },
+    {
+      "n": 10, "slug": "espagne-portugal", "titre": "Espagne & Portugal", "region": "Europe",
+      "carnets": ["Madrid", "Catalunya", "Barcelona", "Lisboa", "Andalucia"],
+      "retenus": 65, "pages": 76, "statut": "à faire",
+      "resume": "La péninsule en cinq carnets, de la Catalogne de 2002 à Madrid en 2013. Presque trois quarts de muets : un volume qui se regarde plus qu'il ne se lit.",
+      "notes": ["72 % muet, très planches."],
+      "sommaire": null
+    },
+    {
+      "n": 11, "slug": "ameriques-rapides", "titre": "Amériques rapides", "region": "Amériques",
+      "carnets": ["New York", "México", "Trip au Canada", "Florida", "Miami"],
+      "retenus": 55, "pages": 64, "statut": "à faire",
+      "resume": "Cinq escales de 2011-2012, dessinées vite et sans commentaire. Le titre dit le régime : on passe, on note, on repart. Quasi album.",
+      "notes": ["83 % muet — le volume le plus silencieux de la collection."],
+      "sommaire": null
+    },
+    {
+      "n": 12, "slug": "asie", "titre": "Asie", "region": "Asie",
+      "carnets": ["South India", "Thaïlande"],
+      "retenus": 35, "pages": 44, "statut": "à faire",
+      "resume": "Deux carnets seulement, l'Inde du Sud (2010) et la Thaïlande (2007), mais une identité visuelle qui ne ressemble à rien d'autre dans le fonds.",
+      "notes": ["78 % muet."],
+      "sommaire": null
+    },
+    {
+      "n": 13, "slug": "europe-eparse", "titre": "Europe éparse", "region": "Europe",
+      "carnets": ["Bulgaria", "Inter Rail en Europe de l'Est", "Lago Maggiore", "Amsterdam", "24h à Alger"],
+      "retenus": 30, "pages": 40, "statut": "à faire",
+      "resume": "Les restes, et ce sont les plus anciens : l'Inter Rail de 2003, la Bulgarie de 2007, Alger en vingt-quatre heures. Le plus petit volume encore viable de la collection.",
+      "notes": ["Très mince — 40 pages, le plancher de ce qui tient comme livre.", "Alger n'est pas en Europe : le carnet est rattaché ici faute d'un ensemble méditerranéen constitué."],
+      "sommaire": null
+    }
+  ],
+  "reserve": {
+    "slug": "reserve", "titre": "Éthiopie & Ouganda", "region": "Afrique",
+    "carnets": ["Entebbe, Ouganda", "Ethiopia"],
+    "resume": "Vingt-deux croquis, aucun muet, mais trop peu pour tenir seuls. À coupler avec un futur séjour éthiopien, ou à absorber ailleurs.",
+    "statut": "réserve"
+  },
+  "transversales": [
+    {"motif": "café, thé, terrasse", "croquis": 93, "destinations": 42},
+    {"motif": "eau, fleuve, mer", "croquis": 139, "destinations": 39},
+    {"motif": "transport", "croquis": 98, "destinations": 38},
+    {"motif": "portraits", "croquis": 107, "destinations": 27},
+    {"motif": "fenêtre, balcon", "croquis": 53, "destinations": 31}
+  ],
+  "transversales_note": "Elles ne s'ajoutent pas aux 1347 : un croquis du volume Soudan peut très bien réapparaître dans « Le café des quarante pays » sous un autre angle. Les comptes ci-dessus ne portent que sur les croquis textés — ils sont donc sous-estimés.",
+  "best_of": {
+    "titre": "Les Carnets, 2002-2019",
+    "resume": "Un croquis par carnet, ordre chronologique. 51 à 80 pages. Hors compte, à sortir en dernier, une fois la collection installée."
+  }
+}

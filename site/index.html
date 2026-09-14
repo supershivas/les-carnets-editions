@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Les Carnets — la collection</title>
+<meta name="description" content="Le découpage éditorial du fonds Les Carnets : 13 volumes, 1 347 croquis, 51 carnets, 2002-2019.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14171B; --bg2:#1B1F24; --bg3:#22272E; --line:#2C323A; --line2:#39414B;
+  --ink:#E8E6E1; --dim:#8E959E; --dimmer:#5C636C; --sel:#F0EDE6;
+  --eu:#7FB3D5; --af:#E0A458; --am:#C96480; --as:#6FBF9B;
+  --t:var(--dim);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:Archivo,system-ui,sans-serif;font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+img{max-width:100%}
+a{color:inherit}
+.t-eu{--t:var(--eu)} .t-af{--t:var(--af)} .t-am{--t:var(--am)} .t-as{--t:var(--as)}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+.lede{max-width:66ch}
+
+h1,h2,h3{font-family:Spectral,Georgia,serif;font-weight:300;letter-spacing:-.01em;
+  text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5.2vw,46px);line-height:1.06}
+h1 em{font-style:italic}
+h2{font-size:22px;line-height:1.2}
+h3{font-size:17px;font-weight:400}
+p{margin:0}
+.serif{font-family:Spectral,Georgia,serif;font-weight:300;font-size:16.5px;line-height:1.68;color:#C9C7C2}
+.label{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dimmer)}
+.num{font-variant-numeric:tabular-nums}
+
+/* barre de navigation */
+.topbar{border-bottom:1px solid var(--line);background:var(--bg)}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;
+  gap:16px;flex-wrap:wrap;padding-block:12px}
+.topbar a{text-decoration:none;color:var(--dim);font-size:13px}
+.topbar a:hover{color:var(--ink)}
+.topbar .home{font-family:Spectral,Georgia,serif;font-size:16px;color:var(--ink)}
+.topbar nav{display:flex;gap:18px;flex-wrap:wrap}
+
+/* en-tête */
+.masthead{border-bottom:1px solid var(--line);padding-block:56px 40px}
+.masthead .kicker{margin-bottom:14px}
+.masthead .lede{margin-top:18px}
+
+/* bandeau de chiffres */
+.figures{border-block:1px solid var(--line);background:var(--bg2)}
+.figrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.fig{padding:17px 20px 16px;border-left:1px solid var(--line)}
+.fig:first-child{border-left:none;padding-left:0}
+.fig .v{font-family:Spectral,Georgia,serif;font-size:29px;font-weight:300;
+  line-height:1.1;font-variant-numeric:tabular-nums}
+.fig .v small{font-size:14px;color:var(--dim)}
+.fig .k{margin-top:5px}
+
+section.blk{padding-block:44px;border-bottom:1px solid var(--line)}
+section.blk:last-of-type{border-bottom:none}
+.blkhead{display:flex;justify-content:space-between;align-items:baseline;
+  gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.blkhead p{color:var(--dim);font-size:13.5px;max-width:52ch}
+
+/* le rayon : chaque volume est un dos de livre, largeur proportionnelle aux pages */
+.rayon{display:flex;align-items:flex-end;gap:4px;overflow-x:auto;padding-bottom:10px}
+.dos{flex:0 0 auto;text-decoration:none;background:var(--bg2);
+  border:1px solid var(--line);border-bottom:3px solid var(--t);
+  border-radius:2px 2px 0 0;padding:14px 0 12px;
+  display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+  min-height:210px;transition:background .15s,transform .15s}
+.dos:hover,.dos:focus-visible{background:var(--bg3);transform:translateY(-3px)}
+.dos .dn{font-family:Spectral,Georgia,serif;font-size:13px;color:var(--dimmer);
+  font-variant-numeric:tabular-nums}
+.dos .dt{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:Spectral,Georgia,serif;font-size:15px;line-height:1;color:var(--ink);
+  margin-block:10px;max-height:130px;overflow:hidden}
+.dos .dp{font-size:10.5px;color:var(--dimmer);font-variant-numeric:tabular-nums}
+.dos.encours{border-style:dashed;border-bottom-style:solid;background:transparent}
+.rayon-cap{font-size:12.5px;color:var(--dimmer);margin-top:8px}
+
+/* tableau chemin de fer */
+.tbl-scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px}
+th{text-align:left;font-weight:500;font-size:11.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dimmer);padding:0 12px 9px;
+  border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:baseline}
+tr:hover td{background:var(--bg2)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+td:first-child,th:first-child{padding-left:0}
+td:last-child,th:last-child{padding-right:0}
+td a{font-family:Spectral,Georgia,serif;font-size:16px;text-decoration:none;
+  border-bottom:1px solid var(--line2);padding-bottom:1px}
+td a:hover{border-bottom-color:var(--t)}
+tr.vol{--t:var(--dim)}
+.dotreg{display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--t);margin-right:9px;vertical-align:middle}
+.part{display:inline-block;width:58px;height:5px;background:var(--bg3);
+  border-radius:3px;overflow:hidden;vertical-align:middle;margin-right:8px}
+.part i{display:block;height:100%;background:var(--t);opacity:.85}
+tfoot td{border-bottom:none;border-top:1px solid var(--line2);
+  color:var(--dim);font-size:13px}
+
+.statut{font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--line2);border-radius:999px;padding:2px 9px;color:var(--dim);
+  white-space:nowrap}
+.statut.fait{color:var(--as);border-color:rgba(111,191,155,.45)}
+.statut.reserve{color:var(--af);border-color:rgba(224,164,88,.45)}
+
+/* notes et encadrés */
+.note{border-left:2px solid var(--t);background:var(--bg2);padding:14px 16px;
+  font-size:14px;color:#C9C7C2;line-height:1.6}
+.notes{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
+.notes li{border-left:2px solid var(--line2);padding:2px 0 2px 14px;
+  font-size:14px;color:#C9C7C2;max-width:70ch}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
+
+/* composition en carnets */
+.carnets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.carnet{display:grid;grid-template-columns:minmax(120px,1.4fr) minmax(70px,2fr) 44px 84px 84px;
+  gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.carnet .cn{font-family:Spectral,Georgia,serif;font-size:16px}
+.carnet .cbar{background:var(--bg3);height:6px;border-radius:3px;overflow:hidden}
+.carnet .cbar i{display:block;height:100%;background:var(--t);opacity:.85}
+.carnet .cq{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.carnet .cy,.carnet .cm{color:var(--dimmer);font-size:12px;font-variant-numeric:tabular-nums}
+@media(max-width:640px){
+  .carnet{grid-template-columns:1fr 44px;grid-template-areas:"n q" "b b" "y m";row-gap:5px}
+  .carnet .cn{grid-area:n}.carnet .cbar{grid-area:b}.carnet .cq{grid-area:q}
+  .carnet .cy{grid-area:y}.carnet .cm{grid-area:m;text-align:right}
+}
+
+/* histogramme */
+.histo{margin:0}
+.histo svg{display:block;max-width:520px}
+.histo .b{fill:var(--t);opacity:.8}
+.histo .b.vide{fill:var(--line);opacity:1}
+.histo .hn{fill:var(--dim);font:10.5px Archivo,sans-serif;text-anchor:middle}
+.histo .ha{fill:var(--dimmer);font:10.5px Archivo,sans-serif;text-anchor:middle}
+.histo figcaption{font-size:12.5px;color:var(--dimmer);margin-top:10px;max-width:52ch}
+
+/* liste de lieux */
+.lieux{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.lieux li{border:1px solid var(--line);border-radius:999px;padding:3px 11px;
+  font-size:12.5px;color:var(--dim)}
+.lieux li b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* sections du sommaire */
+.sections{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.sections li{background:var(--bg2);border-left:2px solid var(--t);
+  padding:15px 18px;display:flex;justify-content:space-between;
+  gap:10px 24px;flex-wrap:wrap;align-items:baseline}
+.sections .sl{display:flex;flex-direction:column;gap:3px;min-width:200px}
+.sections .st{font-family:Spectral,Georgia,serif;font-size:18px}
+.sections .sp{color:var(--dim);font-size:13.5px;font-style:italic;
+  font-family:Spectral,Georgia,serif}
+.sections .sr{text-align:right;font-size:13px;color:var(--dim);
+  font-variant-numeric:tabular-nums;line-height:1.45}
+.sections .sr b{color:var(--ink);font-weight:500}
+
+.pager{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-block:28px 64px}
+.pager a{text-decoration:none;color:var(--dimmer);max-width:45%;
+  display:flex;flex-direction:column;gap:3px}
+.pager a:hover .pl{color:var(--ink)}
+.pager .pk{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase}
+.pager .pl{font-family:Spectral,Georgia,serif;font-size:18px;color:var(--dim)}
+.pager .nx{text-align:right;margin-left:auto}
+
+footer.site{border-top:1px solid var(--line);padding-block:26px 44px;
+  color:var(--dimmer);font-size:12.5px}
+footer.site a{color:var(--dim)}
+footer.site p+p{margin-top:6px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <a class="home" href="index.html">Les Carnets <em>— la collection</em></a>
+  <nav>
+    <a href="index.html">Les 13 volumes</a>
+    <a href="../index.html">Index des croquis</a>
+    <a href="https://lescarnets.fr">lescarnets.fr</a>
+  </nav>
+</div></div>
+
+<header class="masthead"><div class="wrap">
+  <div class="label kicker">1 347 croquis · 51 carnets · 2002–2019</div>
+  <h1>Treize volumes tirés<br>d'un fonds de 1 347 croquis</h1>
+  <p class="lede serif" style="margin-top:18px">Une destination fait un carnet, plusieurs carnets font un volume.
+  Le découpage ci-dessous couvre l'intégralité du fonds&nbsp;: chaque croquis dessiné entre 2002 et 2019
+  appartient à un volume et à un seul. Ce que les livres retiennent est une sélection —
+  environ 714 croquis sur 1 347.</p>
+</div></header>
+
+<div class="figures"><div class="wrap"><div class="figrid">
+  <div class="fig"><div class="v">1 347</div><div class="k label">croquis au fonds</div></div>
+  <div class="fig"><div class="v">13</div><div class="k label">volumes géographiques</div></div>
+  <div class="fig"><div class="v">3</div><div class="k label">sommaires arrêtés</div></div>
+  <div class="fig"><div class="v">~714</div><div class="k label">croquis retenus</div></div>
+  <div class="fig"><div class="v">~832</div><div class="k label">pages cumulées</div></div>
+</div></div></div>
+
+<section class="blk"><div class="wrap">
+  <div class="blkhead">
+    <h2>Le rayon</h2>
+    <p>Chaque dos est un volume&nbsp;; sa largeur suit le nombre de pages estimé.
+    Trait plein en bas&nbsp;: sommaire arrêté. Contour pointillé&nbsp;: volume à faire.</p>
+  </div>
+  <div class="rayon"><a class="dos t-af" style="width:58px" href="volumes/soudan.html" title="Soudan — 52 pages estimées"><span class="dn">1</span><span class="dt">Soudan</span><span class="dp">52</span></a><a class="dos t-eu" style="width:67px" href="volumes/rome.html" title="Rome — 68 pages estimées"><span class="dn">2</span><span class="dt">Rome</span><span class="dp">68</span></a><a class="dos t-am" style="width:65px" href="volumes/haiti.html" title="Haïti — 64 pages estimées"><span class="dn">3</span><span class="dt">Haïti</span><span class="dp">64</span></a><a class="dos t-eu encours" style="width:63px" href="volumes/italies.html" title="Italies hors Roma — 60 pages estimées"><span class="dn">4</span><span class="dt">Italies hors Roma</span><span class="dp">60</span></a><a class="dos t-af encours" style="width:65px" href="volumes/ocean-indien.html" title="Océan Indien — 64 pages estimées"><span class="dn">5</span><span class="dt">Océan Indien</span><span class="dp">64</span></a><a class="dos t-am encours" style="width:67px" href="volumes/caraibes.html" title="Caraïbes hors Haïti — 68 pages estimées"><span class="dn">6</span><span class="dt">Caraïbes hors Haïti</span><span class="dp">68</span></a><a class="dos t-af encours" style="width:76px" href="volumes/afrique-ouest.html" title="Afrique de l&#x27;Ouest — 84 pages estimées"><span class="dn">7</span><span class="dt">Afrique de l&#x27;Ouest</span><span class="dp">84</span></a><a class="dos t-eu encours" style="width:65px" href="volumes/paris.html" title="Paris — 64 pages estimées"><span class="dn">8</span><span class="dt">Paris</span><span class="dp">64</span></a><a class="dos t-eu encours" style="width:76px" href="volumes/france.html" title="France hors Paris — 84 pages estimées"><span class="dn">9</span><span class="dt">France hors Paris</span><span class="dp">84</span></a><a class="dos t-eu encours" style="width:72px" href="volumes/espagne-portugal.html" title="Espagne &amp; Portugal — 76 pages estimées"><span class="dn">10</span><span class="dt">Espagne &amp; Portugal</span><span class="dp">76</span></a><a class="dos t-am encours" style="width:65px" href="volumes/ameriques-rapides.html" title="Amériques rapides — 64 pages estimées"><span class="dn">11</span><span class="dt">Amériques rapides</span><span class="dp">64</span></a><a class="dos t-as encours" style="width:54px" href="volumes/asie.html" title="Asie — 44 pages estimées"><span class="dn">12</span><span class="dt">Asie</span><span class="dp">44</span></a><a class="dos t-eu encours" style="width:52px" href="volumes/europe-eparse.html" title="Europe éparse — 40 pages estimées"><span class="dn">13</span><span class="dt">Europe éparse</span><span class="dp">40</span></a></div>
+  <p class="rayon-cap">La couleur est celle de la région, reprise de l'index des croquis&nbsp;:
+  <span style="color:var(--eu)">Europe</span>, <span style="color:var(--af)">Afrique</span>,
+  <span style="color:var(--am)">Amériques</span>, <span style="color:var(--as)">Asie</span>.</p>
+</div></section>
+
+<section class="blk"><div class="wrap">
+  <div class="blkhead">
+    <h2>Le chemin de fer de la collection</h2>
+    <p>Pages = croquis retenus + 8 pages liminaires et de fin, arrondi au multiple de 4. Règle simple appliquée uniformément aux 13 volumes pour qu&#x27;ils soient comparables — pas une promesse de maquette.</p>
+  </div>
+  <div class="tbl-scroll"><table>
+  <thead><tr>
+    <th class="n">#</th><th>Volume</th><th class="n">Au fonds</th><th class="n">Retenus</th>
+    <th>Part retenue</th><th class="n">Pages est.</th><th>Statut</th>
+  </tr></thead>
+  <tbody><tr class="vol t-af">
+<td class="n" style="color:var(--dimmer)">1</td>
+<td><span class="dotreg"></span><a href="volumes/soudan.html">Soudan</a></td>
+<td class="n">44</td>
+<td class="n">44</td>
+<td><span class="part"><i style="width:100%"></i></span><span class="num">100&nbsp;%</span></td>
+<td class="n">52</td>
+<td><span class="statut fait">fait</span></td>
+</tr><tr class="vol t-eu">
+<td class="n" style="color:var(--dimmer)">2</td>
+<td><span class="dotreg"></span><a href="volumes/rome.html">Rome</a></td>
+<td class="n">220</td>
+<td class="n">60</td>
+<td><span class="part"><i style="width:27%"></i></span><span class="num">27&nbsp;%</span></td>
+<td class="n">68 <span style="color:var(--dimmer)">(88–96)</span></td>
+<td><span class="statut fait">fait</span></td>
+</tr><tr class="vol t-am">
+<td class="n" style="color:var(--dimmer)">3</td>
+<td><span class="dotreg"></span><a href="volumes/haiti.html">Haïti</a></td>
+<td class="n">185</td>
+<td class="n">55</td>
+<td><span class="part"><i style="width:30%"></i></span><span class="num">30&nbsp;%</span></td>
+<td class="n">64 <span style="color:var(--dimmer)">(88)</span></td>
+<td><span class="statut fait">fait</span></td>
+</tr><tr class="vol t-eu">
+<td class="n" style="color:var(--dimmer)">4</td>
+<td><span class="dotreg"></span><a href="volumes/italies.html">Italies hors Roma</a></td>
+<td class="n">60</td>
+<td class="n">50</td>
+<td><span class="part"><i style="width:83%"></i></span><span class="num">83&nbsp;%</span></td>
+<td class="n">60</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-af">
+<td class="n" style="color:var(--dimmer)">5</td>
+<td><span class="dotreg"></span><a href="volumes/ocean-indien.html">Océan Indien</a></td>
+<td class="n">78</td>
+<td class="n">55</td>
+<td><span class="part"><i style="width:71%"></i></span><span class="num">71&nbsp;%</span></td>
+<td class="n">64</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-am">
+<td class="n" style="color:var(--dimmer)">6</td>
+<td><span class="dotreg"></span><a href="volumes/caraibes.html">Caraïbes hors Haïti</a></td>
+<td class="n">99</td>
+<td class="n">60</td>
+<td><span class="part"><i style="width:61%"></i></span><span class="num">61&nbsp;%</span></td>
+<td class="n">68</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-af">
+<td class="n" style="color:var(--dimmer)">7</td>
+<td><span class="dotreg"></span><a href="volumes/afrique-ouest.html">Afrique de l&#x27;Ouest</a></td>
+<td class="n">121</td>
+<td class="n">75</td>
+<td><span class="part"><i style="width:62%"></i></span><span class="num">62&nbsp;%</span></td>
+<td class="n">84</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-eu">
+<td class="n" style="color:var(--dimmer)">8</td>
+<td><span class="dotreg"></span><a href="volumes/paris.html">Paris</a></td>
+<td class="n">92</td>
+<td class="n">55</td>
+<td><span class="part"><i style="width:60%"></i></span><span class="num">60&nbsp;%</span></td>
+<td class="n">64</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-eu">
+<td class="n" style="color:var(--dimmer)">9</td>
+<td><span class="dotreg"></span><a href="volumes/france.html">France hors Paris</a></td>
+<td class="n">129</td>
+<td class="n">75</td>
+<td><span class="part"><i style="width:58%"></i></span><span class="num">58&nbsp;%</span></td>
+<td class="n">84</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-eu">
+<td class="n" style="color:var(--dimmer)">10</td>
+<td><span class="dotreg"></span><a href="volumes/espagne-portugal.html">Espagne &amp; Portugal</a></td>
+<td class="n">113</td>
+<td class="n">65</td>
+<td><span class="part"><i style="width:58%"></i></span><span class="num">58&nbsp;%</span></td>
+<td class="n">76</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-am">
+<td class="n" style="color:var(--dimmer)">11</td>
+<td><span class="dotreg"></span><a href="volumes/ameriques-rapides.html">Amériques rapides</a></td>
+<td class="n">89</td>
+<td class="n">55</td>
+<td><span class="part"><i style="width:62%"></i></span><span class="num">62&nbsp;%</span></td>
+<td class="n">64</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-as">
+<td class="n" style="color:var(--dimmer)">12</td>
+<td><span class="dotreg"></span><a href="volumes/asie.html">Asie</a></td>
+<td class="n">51</td>
+<td class="n">35</td>
+<td><span class="part"><i style="width:69%"></i></span><span class="num">69&nbsp;%</span></td>
+<td class="n">44</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-eu">
+<td class="n" style="color:var(--dimmer)">13</td>
+<td><span class="dotreg"></span><a href="volumes/europe-eparse.html">Europe éparse</a></td>
+<td class="n">44</td>
+<td class="n">30</td>
+<td><span class="part"><i style="width:68%"></i></span><span class="num">68&nbsp;%</span></td>
+<td class="n">40</td>
+<td><span class="statut ">à faire</span></td>
+</tr><tr class="vol t-af">
+<td class="n" style="color:var(--dimmer)">—</td>
+<td><span class="dotreg"></span><a href="volumes/reserve.html">Éthiopie &amp; Ouganda</a></td>
+<td class="n">22</td><td class="n">—</td><td></td><td class="n">—</td>
+<td><span class="statut reserve">réserve</span></td>
+</tr></tbody>
+  <tfoot><tr>
+    <td></td><td>13 volumes + réserve</td><td class="n">1 347</td>
+    <td class="n">~714</td><td></td><td class="n">~832</td><td></td>
+  </tr></tfoot>
+  </table></div>
+  <p class="note t-as" style="margin-top:22px;max-width:70ch">Les croquis non retenus ne disparaissent pas : ils restent sur lescarnets.fr, qui est le lieu patrimonial complet. Les livres sont une sélection, pas un remplacement de l&#x27;archive.</p>
+</div></section>
+
+<section class="blk"><div class="wrap">
+  <div class="blkhead"><h2>Ce que le chiffrage ne dit pas encore</h2></div>
+  <ul class="notes"><li>Volume 9 (France hors Paris) est un patchwork de neuf lieux sans grand fil apparent — c&#x27;est celui où « chercher l&#x27;angle, pas la géographie » demandera le plus de travail. Possible qu&#x27;il n&#x27;existe pas comme un seul livre.</li><li>Volumes 10 à 13 sont à dominante très muette (58 à 83 % de croquis sans texte). Le compte de pages suppose une image par page ; un régime aussi silencieux peut légitimement se resserrer et faire un livre plus court, plus dense.</li><li>Le classement Roma → Mayotte (4 croquis) reste à corriger sur lescarnets.fr avant que le volume Océan Indien parte en sélection.</li></ul>
+</div></section>
+
+<section class="blk"><div class="wrap">
+  <div class="cols">
+    <div>
+      <div class="blkhead" style="margin-bottom:14px"><h2>Les transversales</h2></div>
+      <p class="serif" style="margin-bottom:18px;font-size:15px">Elles ne s&#x27;ajoutent pas aux 1347 : un croquis du volume Soudan peut très bien réapparaître dans « Le café des quarante pays » sous un autre angle. Les comptes ci-dessus ne portent que sur les croquis textés — ils sont donc sous-estimés.</p>
+      <div class="tbl-scroll"><table style="min-width:0">
+        <thead><tr><th>Motif</th><th class="n">Croquis</th><th class="n">Destinations</th></tr></thead>
+        <tbody><tr><td>café, thé, terrasse</td><td class="n">93</td><td class="n">42</td></tr><tr><td>eau, fleuve, mer</td><td class="n">139</td><td class="n">39</td></tr><tr><td>transport</td><td class="n">98</td><td class="n">38</td></tr><tr><td>portraits</td><td class="n">107</td><td class="n">27</td></tr><tr><td>fenêtre, balcon</td><td class="n">53</td><td class="n">31</td></tr></tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="blkhead" style="margin-bottom:14px"><h2>Le best of, en clôture</h2></div>
+      <h3 style="margin-bottom:8px"><em>Les Carnets, 2002-2019</em></h3>
+      <p class="serif" style="font-size:15px">Un croquis par carnet, ordre chronologique. 51 à 80 pages. Hors compte, à sortir en dernier, une fois la collection installée.</p>
+      <p class="note t-af" style="margin-top:26px">Treize volumes, c&#x27;est beaucoup. La priorité reste le plaisir du projet : cinq ou six volumes forment déjà une collection qui a du sens. Ce chiffrage sert à savoir ce qui existe et combien ça pèse, pas à fixer un programme.</p>
+    </div>
+  </div>
+</div></section>
+<footer class="site"><div class="wrap">
+  <p>Croquis de Jérôme Agostini, 2002-2019. L'archive complète vit sur <a href="https://lescarnets.fr">lescarnets.fr</a> — les livres en sont une sélection, pas un remplacement.</p>
+  <p>Page générée depuis <code>volumes.json</code> et <code>corpus_complet.json</code> par <code>tools/build_site.py</code>. Les chiffres du fonds sont recalculés à chaque build.</p>
+</div></footer>
+</body>
+</html>
