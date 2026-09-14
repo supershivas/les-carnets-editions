@@ -2,7 +2,13 @@
 """Génère le site de la collection Les Carnets.
 
 Entrées  : volumes.json (découpage éditorial) + corpus_complet.json (le fonds).
-Sorties  : site/index.html — la collection ; site/volumes/<slug>.html — un volume.
+Sorties, à la racine du dépôt, qui est la racine du site :
+    index.html              accueil — la vitrine du projet
+    collection.html         la collection — les 13 volumes et le chemin de fer
+    volumes/<slug>.html     une page par volume, réserve comprise
+    assets/carnets.css      la feuille de style commune
+
+croquis.html (l'index des croquis) n'est PAS généré : il est maintenu à la main.
 
 Tous les chiffres du fonds (croquis, muets, années, lieux, carnets) sont
 recalculés ici à partir du corpus ; seuls les choix éditoriaux (retenus,
@@ -16,7 +22,7 @@ import unicodedata
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "site")
+OUT = ROOT
 REPO = "https://github.com/supershivas/les-carnets-editions/blob/main/"
 
 MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
@@ -170,7 +176,46 @@ p{margin:0}
 .topbar a{text-decoration:none;color:var(--dim);font-size:13px}
 .topbar a:hover{color:var(--ink)}
 .topbar .home{font-family:Spectral,Georgia,serif;font-size:16px;color:var(--ink)}
-.topbar nav{display:flex;gap:18px;flex-wrap:wrap}
+.topbar nav{display:flex;gap:18px;flex-wrap:wrap;align-items:baseline}
+.topbar nav a{padding-bottom:2px;border-bottom:1px solid transparent}
+.topbar nav a.ici{color:var(--ink);border-bottom-color:var(--ink)}
+.topbar nav a.ext::after{content:" ↗";color:var(--dimmer)}
+
+/* fil d'Ariane */
+.fil{padding-block:14px 0;font-size:12.5px;color:var(--dimmer)}
+.fil a{color:var(--dim);text-decoration:none;border-bottom:1px solid var(--line)}
+.fil a:hover{color:var(--ink)}
+.fil span{margin-inline:7px}
+
+/* accueil : les deux portes */
+.portes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;
+  background:var(--line);border:1px solid var(--line)}
+.porte{background:var(--bg2);padding:26px 26px 24px;text-decoration:none;
+  display:flex;flex-direction:column;gap:10px;transition:background .15s}
+.porte:hover{background:var(--bg3)}
+.porte .pt{font-family:Spectral,Georgia,serif;font-size:25px;font-weight:300;color:var(--ink)}
+.porte .pd{color:var(--dim);font-size:14px;max-width:42ch}
+.porte .pa{margin-top:6px;font-size:12.5px;color:var(--t);letter-spacing:.04em}
+.porte.p-col{--t:var(--eu)} .porte.p-idx{--t:var(--as)}
+
+/* accueil : la nappe du fonds, mois par mois */
+.nappe{margin:0;overflow-x:auto}
+.nappe svg{display:block;min-width:640px}
+.nappe .yl{fill:var(--dimmer);font:10.5px Archivo,sans-serif}
+.nappe .yr{stroke:var(--line)}
+.nappe figcaption{font-size:12.5px;color:var(--dimmer);margin-top:12px;max-width:62ch}
+.legende{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);
+  list-style:none;margin:14px 0 0;padding:0}
+.legende li{display:flex;align-items:center;gap:7px}
+.legende i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.legende b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* accueil : la règle du fonds */
+.regles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:28px;
+  list-style:none;margin:0;padding:0}
+.regles li{border-top:1px solid var(--line2);padding-top:14px}
+.regles .rt{font-family:Spectral,Georgia,serif;font-size:19px;margin-bottom:7px}
+.regles .rd{color:var(--dim);font-size:14px;line-height:1.6}
 
 /* en-tête */
 .masthead{border-bottom:1px solid var(--line);padding-block:56px 40px}
@@ -317,15 +362,16 @@ HEAD = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@400;500&display=swap" rel="stylesheet">
-<style>{css}</style>
+<link rel="stylesheet" href="{base}assets/carnets.css">
 </head>
 <body>
 <div class="topbar"><div class="wrap">
-  <a class="home" href="{base}index.html">Les Carnets <em>— la collection</em></a>
+  <a class="home" href="{base}index.html">Les Carnets</a>
   <nav>
-    <a href="{base}index.html">Les 13 volumes</a>
-    <a href="{base}../index.html">Index des croquis</a>
-    <a href="https://lescarnets.fr">lescarnets.fr</a>
+    <a href="{base}index.html"{a_accueil}>Accueil</a>
+    <a href="{base}collection.html"{a_collection}>La collection</a>
+    <a href="{base}croquis.html"{a_croquis}>Index des croquis</a>
+    <a href="https://lescarnets.fr" class="ext">lescarnets.fr</a>
   </nav>
 </div></div>
 """
@@ -339,8 +385,146 @@ FOOT = """<footer class="site"><div class="wrap">
 """
 
 
-def page(title, desc, corps, base=""):
-    return HEAD.format(title=e(title), desc=e(desc), css=CSS, base=base) + corps + FOOT
+def page(title, desc, corps, base="", actif=""):
+    ici = ' class="ici" aria-current="page"'
+    return HEAD.format(
+        title=e(title), desc=e(desc), base=base,
+        a_accueil=ici if actif == "accueil" else "",
+        a_collection=ici if actif in ("collection", "volume") else "",
+        a_croquis=ici if actif == "croquis" else "",
+    ) + corps + FOOT
+
+
+def nappe(corpus):
+    """Le fonds entier, mois par mois, empilé par région — 2002 à 2019."""
+    ordre = ["Europe", "Afrique", "Amériques", "Asie"]
+    par_mois = {}
+    for o in corpus:
+        par_mois.setdefault(o["d"][:7], Counter())[o["r"]] += 1
+    ms = sorted(par_mois)
+    a0, a1 = int(ms[0][:4]), int(ms[-1][:4])
+    tous = [f"{a}-{m:02d}" for a in range(a0, a1 + 1) for m in range(1, 13)]
+    haut = max(sum(c.values()) for c in par_mois.values())
+    lg, gap, h = 4.2, 1.1, 120
+    w = len(tous) * (lg + gap)
+
+    barres, reperes = [], []
+    for i, m in enumerate(tous):
+        x = i * (lg + gap)
+        if m.endswith("-01"):
+            reperes.append(f'<line class="yr" x1="{x - gap / 2:.1f}" y1="0" '
+                           f'x2="{x - gap / 2:.1f}" y2="{h + 6}"></line>')
+            reperes.append(f'<text class="yl" x="{x + 2:.1f}" y="{h + 20}">{m[:4]}</text>')
+        c = par_mois.get(m)
+        if not c:
+            continue
+        y = h
+        for r in ordre:
+            n = c.get(r, 0)
+            if not n:
+                continue
+            hb = h * n / haut
+            y -= hb
+            barres.append(f'<rect x="{x:.1f}" y="{y:.2f}" width="{lg}" '
+                          f'height="{hb:.2f}" fill="var(--{TEINTE[r]})" opacity=".85"></rect>')
+
+    tot = Counter(o["r"] for o in corpus)
+    leg = "".join(f'<li><i style="background:var(--{TEINTE[r]})"></i>{r} <b>{nb(tot[r])}</b></li>'
+                  for r in ordre if tot[r])
+    pic = max(par_mois, key=lambda m: sum(par_mois[m].values()))
+    pic_txt = f"{MOIS[int(pic[5:]) - 1]} {pic[:4]}"
+
+    return f'''<figure class="nappe">
+<svg viewBox="0 -6 {w:.0f} {h + 32}" width="100%" height="190" role="img"
+  aria-label="Croquis par mois de {a0} à {a1}, empilés par région ; maximum {haut} croquis en {pic_txt}">
+{"".join(reperes)}{"".join(barres)}
+</svg>
+<figcaption>Un trait par mois, sa hauteur est le nombre de croquis, sa couleur la région.
+Le mois le plus dessiné&nbsp;: {pic_txt}, {haut} croquis. Les creux sont les mois sans voyage.</figcaption>
+<ul class="legende">{leg}</ul>
+</figure>'''
+
+
+def accueil(V, corpus):
+    c = V["collection"]
+    # comptage par carnet, classement corrigé compris (les 4 mahorais quittent Roma)
+    mal_classes = set()
+    for v in V["volumes"]:
+        mal_classes |= set(v.get("exclure_fichiers", []))
+    par_carnet = Counter(o["c"] for o in corpus if o["f"] not in mal_classes)
+    plus_gros, n_plus_gros = par_carnet.most_common(1)[0]
+    plus_petit, n_plus_petit = par_carnet.most_common()[-1]
+    tot = len(corpus)
+    carnets = len({o["c"] for o in corpus})
+    lieux = len({o["l"] for o in corpus if o.get("l")})
+    an0, an1 = min(o["y"] for o in corpus), max(o["y"] for o in corpus)
+    pages = sum(v["pages"] for v in V["volumes"])
+    retenus = sum(v["retenus"] for v in V["volumes"])
+
+    corps = f"""
+<header class="masthead"><div class="wrap">
+  <div class="label kicker">Une archive de croquis, et les livres qu'on en tire</div>
+  <h1>{nb(tot)} croquis rapportés<br>de {carnets} destinations</h1>
+  <p class="lede serif" style="margin-top:20px">Jérôme Agostini dessine en voyage depuis {an0}.
+  Une destination fait un carnet, {carnets} carnets font le fonds&nbsp;: {nb(tot)} croquis datés,
+  situés, souvent commentés, tous en ligne sur lescarnets.fr. <em>Les Carnets</em> est la collection
+  de livres qui en est tirée — {len(V['volumes'])} volumes carrés au format {e(c['format'].split(',')[0])},
+  un par ensemble géographique.</p>
+</div></header>
+
+<div class="figures"><div class="wrap"><div class="figrid">
+  <div class="fig"><div class="v">{nb(tot)}</div><div class="k label">croquis</div></div>
+  <div class="fig"><div class="v">{carnets}</div><div class="k label">carnets</div></div>
+  <div class="fig"><div class="v">{nb(lieux)}</div><div class="k label">lieux distincts</div></div>
+  <div class="fig"><div class="v">{an1 - an0 + 1}<small> ans</small></div><div class="k label">de {an0} à {an1}</div></div>
+  <div class="fig"><div class="v">{len(V['volumes'])}</div><div class="k label">volumes à en tirer</div></div>
+</div></div></div>
+
+<section class="blk"><div class="wrap">
+  <div class="blkhead">
+    <h2>Le fonds, mois par mois</h2>
+    <p>Dix-huit ans de dessin ne font pas une ligne continue&nbsp;: on dessine quand on part.</p>
+  </div>
+  {nappe(corpus)}
+</div></section>
+
+<section class="blk"><div class="wrap">
+  <div class="blkhead"><h2>Par où entrer</h2></div>
+  <div class="portes">
+    <a class="porte p-col" href="collection.html">
+      <span class="pt">La collection</span>
+      <span class="pd">Les {len(V['volumes'])} volumes, ce que chacun contient, ce qu'il pèse en pages.
+      Environ {nb(retenus)} croquis retenus sur {nb(tot)}, {nb(pages)} pages cumulées.</span>
+      <span class="pa">Voir le chemin de fer →</span>
+    </a>
+    <a class="porte p-idx" href="croquis.html">
+      <span class="pt">L'index des croquis</span>
+      <span class="pd">L'outil de consultation du fonds&nbsp;: recherche plein texte, frise des dates,
+      filtres par carnet et par thème, carte. Accès par mot de passe.</span>
+      <span class="pa">Ouvrir l'index →</span>
+    </a>
+  </div>
+</div></section>
+
+<section class="blk"><div class="wrap">
+  <div class="blkhead"><h2>Les trois règles du projet</h2></div>
+  <ul class="regles">
+    <li><div class="rt">Une destination, un carnet</div>
+      <div class="rd">Le découpage du fonds n'est pas administratif&nbsp;: il suit les voyages.
+      C'est pourquoi {e(plus_gros)} pèse {n_plus_gros} croquis quand
+      {e(plus_petit)} en pèse {n_plus_petit}.</div></li>
+    <li><div class="rt">Le livre choisit, l'archive garde</div>
+      <div class="rd">{e(c['reserve_note'])}</div></li>
+    <li><div class="rt">L'angle, pas la géographie</div>
+      <div class="rd">Un volume ne s'écrit pas « mes deux ans à Rome » mais
+      « deux ans, un tramway, un marché ». La géographie regroupe&nbsp;; l'angle fait le livre.</div></li>
+  </ul>
+</div></section>
+"""
+    return page("Les Carnets — croquis de voyage et collection de livres",
+                f"Le fonds Les Carnets : {nb(tot)} croquis dessinés entre {an0} et {an1} dans "
+                f"{carnets} destinations, et les {len(V['volumes'])} volumes tirés de cette archive.",
+                corps, actif="accueil")
 
 
 def index(V, corpus, vues):
@@ -470,9 +654,9 @@ def index(V, corpus, vues):
   </div>
 </div></section>
 """
-    return page("Les Carnets — la collection",
+    return page("La collection — Les Carnets",
                 f"Le découpage éditorial du fonds Les Carnets : 13 volumes, {nb(tot)} croquis, "
-                f"{carnets} carnets, {an0}-{an1}.", corps)
+                f"{carnets} carnets, {an0}-{an1}.", corps, actif="collection")
 
 
 def page_volume(vol, cro, V, prec, suiv, reserve=False):
@@ -557,7 +741,11 @@ def page_volume(vol, cro, V, prec, suiv, reserve=False):
                    f'<span class="pl">{e(suiv["titre"])}</span></a>')
 
     corps = f"""
-<header class="masthead t-{t}"><div class="wrap">
+<div class="wrap"><nav class="fil" aria-label="Fil d'Ariane">
+  <a href="../collection.html">La collection</a><span>›</span>{num} — {e(vol['titre'])}
+</nav></div>
+
+<header class="masthead t-{t}" style="padding-top:26px"><div class="wrap">
   <div class="label kicker">{num} · {e(vol['region'])} · {s['an0']}–{s['an1']}
     <span class="statut {statut_cls}" style="margin-left:10px">{e(vol['statut'])}</span></div>
   <h1 style="border-left:3px solid var(--t);padding-left:18px;margin-left:-21px">{e(vol['titre'])}</h1>
@@ -575,18 +763,25 @@ def page_volume(vol, cro, V, prec, suiv, reserve=False):
 """
     return page(f"{vol['titre']} — Les Carnets",
                 f"{num} de la collection Les Carnets : {s['n']} croquis, {s['an0']}-{s['an1']}. "
-                f"{vol['resume'][:120]}", corps, base="../")
+                f"{vol['resume'][:120]}", corps, base="../", actif="volume")
 
 
 def main():
     V, corpus = charger()
     os.makedirs(os.path.join(OUT, "volumes"), exist_ok=True)
+    os.makedirs(os.path.join(OUT, "assets"), exist_ok=True)
 
     tous = V["volumes"] + [V["reserve"]]
     cro = {v["slug"]: croquis_du_volume(v, corpus) for v in tous}
     vues = {k: stats(v) for k, v in cro.items()}
 
+    with open(os.path.join(OUT, "assets", "carnets.css"), "w", encoding="utf-8") as f:
+        f.write("/* Généré par tools/build_site.py — ne pas éditer à la main. */\n" + CSS)
+
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
+        f.write(accueil(V, corpus))
+
+    with open(os.path.join(OUT, "collection.html"), "w", encoding="utf-8") as f:
         f.write(index(V, corpus, vues))
 
     for i, v in enumerate(tous):
@@ -597,7 +792,7 @@ def main():
                                 reserve=(v is V["reserve"])))
 
     couv = sum(len(c) for c in cro.values())
-    print(f"site/ : 1 page collection + {len(tous)} pages volumes")
+    print(f"généré : index.html, collection.html, {len(tous)} pages de volume, assets/carnets.css")
     print(f"couverture du fonds : {couv}/{len(corpus)} croquis")
     if couv != len(corpus):
         raise SystemExit("ATTENTION : le découpage ne couvre pas exactement le fonds.")

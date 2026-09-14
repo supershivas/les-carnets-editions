@@ -5,29 +5,43 @@ tirés du fonds de croquis de Jérôme Agostini — **1 347 croquis, 51 carnets,
 publiés sur [lescarnets.fr](https://lescarnets.fr).
 
 Ce dépôt ne contient pas les images. Il contient le fonds sous forme de données, le
-découpage de la collection, les sommaires arrêtés, et deux outils pour travailler dessus.
+découpage de la collection, les sommaires arrêtés, et le site qui donne accès à tout cela.
 
 ---
 
-## Le site de la collection
+## Le plan du site
+
+La racine du dépôt est la racine du site : les quatre niveaux sont au même endroit, reliés
+par une barre de navigation commune.
+
+| Fichier | Niveau | Sa seule question |
+|---|---|---|
+| `index.html` | **Accueil** | C'est quoi ? Le projet, le fonds mois par mois, les deux portes. |
+| `collection.html` | **La collection** | Qu'est-ce que ça pèse ? Le chemin de fer des 13 volumes, les transversales, le best of. |
+| `volumes/<slug>.html` | **Le volume** | Qu'y a-t-il dedans ? 14 pages, réserve comprise. |
+| `croquis.html` | **L'index des croquis** | Où est ce croquis ? L'outil de consultation du fonds. |
+
+Les trois premiers niveaux sont **générés** et en accès libre : ils ne montrent aucun
+croquis, seulement le découpage éditorial. Le quatrième est maintenu à la main et reste
+protégé par mot de passe.
 
 ```
-site/index.html              La collection : les 13 volumes, le chemin de fer, les transversales
-site/volumes/<slug>.html     Une page par volume (14 pages, réserve comprise)
+index.html            accueil                   ← généré
+collection.html       la collection             ← généré
+volumes/*.html        14 pages de volume        ← généré
+assets/carnets.css    feuille commune           ← générée
+croquis.html          l'index des croquis       ← à la main
 ```
 
-Pages statiques, sans dépendance : ouvrez `site/index.html` directement dans un navigateur.
-Elles sont **générées**, jamais écrites à la main — voir « Régénérer le site » plus bas.
-
-Chaque page de volume donne le gisement réel (carnets, croquis, part muette, densité de
-texte, années, lieux les plus dessinés), la sélection retenue, l'estimation de pages, et
-pour les volumes arrêtés l'angle et la structure en sections.
+Ouvrez `index.html` dans un navigateur : les pages générées sont statiques et sans
+dépendance. Chaque page de volume donne le gisement réel (carnets, croquis, part muette,
+densité de texte, années, lieux les plus dessinés), la sélection retenue, l'estimation de
+pages, et pour les volumes arrêtés l'angle et la structure en sections.
 
 ## L'index des croquis
 
-```
-index.html                   Outil de consultation du fonds : recherche, timeline, carte, édition
-```
+`croquis.html` — l'outil s'appelait `index.html` jusqu'à l'arrivée de l'accueil, qui occupe
+désormais la racine.
 
 Application d'une page qui charge `corpus_complet.json` : recherche plein texte, frise
 mensuelle, filtres par thème, carnet et précision de géocodage, carte Leaflet, correction
@@ -38,8 +52,10 @@ mot de passe.
 par `fetch`, que le protocole `file://` bloque.
 
 ```bash
-python3 -m http.server 8000   # puis http://localhost:8000/index.html
+python3 -m http.server 8000   # puis http://localhost:8000/croquis.html
 ```
+
+Les autres pages, elles, s'ouvrent aussi bien par double-clic.
 
 ---
 
@@ -49,6 +65,7 @@ python3 -m http.server 8000   # puis http://localhost:8000/index.html
 |---|---|
 | `corpus_complet.json` | **La source de vérité du fonds.** 1 347 entrées, une par croquis. |
 | `volumes.json` | Le découpage éditorial : quels carnets font quel volume, sélection, angles, notes. |
+| `assets/carnets.css` | La feuille de style commune, générée avec les pages. |
 | `collection-complete.md` | Le chiffrage de la collection en prose, volume par volume. |
 | `rome-sommaire.md` | Sommaire arrêté du volume 2 — sélection, sections, textes d'ouverture et de clôture. |
 | `haiti-sommaire.md` | Sommaire arrêté du volume 3 — même chose, en régime mixte. |
@@ -95,7 +112,8 @@ recopiés :
 python3 tools/build_site.py
 ```
 
-Le script lit `volumes.json` et `corpus_complet.json` et réécrit tout `site/`.
+Le script lit `volumes.json` et `corpus_complet.json`, puis réécrit `index.html`,
+`collection.html`, `volumes/` et `assets/carnets.css`. Il ne touche jamais à `croquis.html`.
 La séparation est stricte :
 
 - **tous les chiffres du fonds** (croquis, muets, densité, années, lieux, bornes de dates)
@@ -107,7 +125,7 @@ Conséquence pratique : corriger le corpus suffit, les pages suivent. Et un chif
 sur le site ne peut pas diverger du fonds — il en sort.
 
 Modifier un volume, c'est donc éditer `volumes.json` puis relancer le script ; n'éditez
-jamais un fichier de `site/` à la main, il sera écrasé.
+jamais une page générée à la main, elle sera écrasée au build suivant.
 
 ---
 
