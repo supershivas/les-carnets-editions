@@ -169,10 +169,11 @@ p{margin:0}
 .label{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dimmer)}
 .num{font-variant-numeric:tabular-nums}
 
-/* barre de navigation */
+/* barre de navigation — pleine largeur sur les quatre niveaux du site,
+   comme sur croquis.html, dont la mise en page est bord à bord */
 .topbar{border-bottom:1px solid var(--line);background:var(--bg)}
-.topbar .wrap{display:flex;justify-content:space-between;align-items:center;
-  gap:16px;flex-wrap:wrap;padding-block:12px}
+.topbar .wrap{max-width:none;display:flex;justify-content:space-between;
+  align-items:center;gap:16px;flex-wrap:wrap;padding-block:12px}
 .topbar a{text-decoration:none;color:var(--dim);font-size:13px}
 .topbar a:hover{color:var(--ink)}
 .topbar .home{font-family:Spectral,Georgia,serif;font-size:16px;color:var(--ink)}
