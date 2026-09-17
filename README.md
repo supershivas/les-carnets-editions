@@ -110,7 +110,10 @@ recopiés :
 
 | Dossier | Rôle |
 |---|---|
-| `wordpress/carnets-vignettes/` | Greffon WordPress pour **choisir l'image qui représente chaque carnet** sur l'accueil de lescarnets.fr, au lieu de subir le dernier croquis publié. Voir `wordpress/README.md`. |
+| `wordpress/carnets-vignettes/` | Extension WordPress : **choisir l'image qui représente chaque carnet** sur l'accueil, au lieu de subir le dernier croquis publié. |
+| `wordpress/theme-lescarnets/` | Deux fichiers du thème corrigés : les pins d'une même coordonnée ne se chevauchent plus sur la carte. |
+
+Le site WordPress n'est pas dans ce dépôt. `wordpress/README.md` dit où déposer ces fichiers.
 
 ---
 

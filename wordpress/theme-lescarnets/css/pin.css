@@ -1,0 +1,207 @@
+/*
+ * Pin de carte — goutte ocre à pointe basse, qui se déforme en étiquette
+ * au clic pour révéler le titre du croquis et son lieu.
+ *
+ * Fichier partagé : chargé côté public (cartes Leaflet) ET dans l'éditeur
+ * (métabox de localisation), pour que le pin soit le même partout.
+ * Les variables sont redéclarées ici car style.css n'est pas chargé en admin.
+ *
+ * Structure :
+ *   .lc-pin          point sans dimension = la coordonnée exacte
+ *   └ .lc-pin-shape  place, dimensionne sur le contenu, porte les marges
+ *     ├ .lc-pin-bg   la goutte (pastille + pointe) — SEULE couche filtrée
+ *     └ .lc-pin-label titre + lieu, nets, au-dessus
+ */
+:root{
+  --lc-pin:      #a9622f;   /* ocre du pin */
+  --lc-pin-ring: #f5f2eb;   /* liseré clair, détache le pin du fond de carte */
+  --lc-pin-ease: cubic-bezier(.7,0,.2,1);
+}
+
+/* Pas de `position` ici : Leaflet met déjà .leaflet-marker-icon en
+   position:absolute, ce qui en fait le bloc conteneur des enfants.
+   Le redéclarer exposerait à un conflit d'ordre avec leaflet.css. */
+.lc-pin{display:block;width:0;height:0;cursor:pointer}
+
+/* Le calque de mise en place. `bottom` laisse sous lui la hauteur de la
+   pointe. Il est ancré par le bas : en s'ouvrant il grandit vers le HAUT,
+   la pointe ne bouge donc pas d'un pixel. */
+.lc-pin-shape{
+  position:absolute;left:0;bottom:6px;
+  transform:translateX(-50%);
+  transform-origin:50% 120%;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  box-sizing:border-box;
+  min-width:19px;min-height:19px;
+  padding:0;
+  transition:transform .3s var(--lc-pin-ease),padding .42s var(--lc-pin-ease);
+}
+
+/* Marges de l'étiquette ouverte : généreuses en haut et en bas, plus
+   serrées sur les côtés. */
+.lc-pin.is-open .lc-pin-shape{padding:9px 8px}
+
+/* La goutte. Le liseré n'est PAS un `border` : un border cerne chaque forme
+   et tracerait une arcade en travers du bas de la pastille, détachant la
+   pointe. Quatre drop-shadow sans flou, chaînés, cernent la silhouette
+   RÉUNIE — le filtre travaille sur l'alpha composite du calque. La 5e est
+   l'ombre portée, appliquée ensuite, donc au contour déjà formé.
+   Le filtre est confiné à cette couche : appliqué au texte, il empâterait
+   les glyphes de 2px. */
+.lc-pin-bg{
+  position:absolute;inset:0;
+  border-radius:999px;
+  background:var(--lc-pin);
+  transition:border-radius .42s var(--lc-pin-ease);
+  filter:
+    drop-shadow(2px 0 0 var(--lc-pin-ring))
+    drop-shadow(-2px 0 0 var(--lc-pin-ring))
+    drop-shadow(0 2px 0 var(--lc-pin-ring))
+    drop-shadow(0 -2px 0 var(--lc-pin-ring))
+    drop-shadow(0 2px 3px rgba(0,0,0,.45));
+}
+.lc-pin.is-open .lc-pin-bg{
+  border-radius:13px;
+  filter:
+    drop-shadow(2px 0 0 var(--lc-pin-ring))
+    drop-shadow(-2px 0 0 var(--lc-pin-ring))
+    drop-shadow(0 2px 0 var(--lc-pin-ring))
+    drop-shadow(0 -2px 0 var(--lc-pin-ring))
+    drop-shadow(0 3px 8px rgba(0,0,0,.5));
+}
+
+/* La pointe : petit carré tourné à 45°, coin bas légèrement arrondi.
+   Deux contraintes l'ont dessinée :
+   — assez ÉTROIT (9px, soit 12.7px en diagonale) pour que sa partie la plus
+     large reste dans la pastille : un losange plus grand dépasse sur les
+     flancs et donne des épaules anguleuses au lieu d'un fuseau ;
+   — sommet ÉMOUSSÉ (border-radius) : sur une pointe trop aiguë, les copies
+     décalées du contour laissent l'ocre apparent entre elles et la pointe
+     semble fourchue. */
+.lc-pin-bg::after{
+  content:"";
+  position:absolute;left:50%;top:100%;
+  margin-left:-4.5px;margin-top:-7px;
+  width:9px;height:9px;
+  background:var(--lc-pin);
+  border-bottom-right-radius:2.5px;
+  transform:rotate(45deg);
+}
+
+/* L'étiquette est repliée à zéro dans les DEUX dimensions : sans max-height,
+   le texte replié garderait sa hauteur de ligne et la pastille fermée ne
+   serait plus ronde. */
+.lc-pin-label{
+  position:relative;z-index:1;
+  display:block;max-width:0;max-height:0;overflow:hidden;
+  transition:max-width .42s var(--lc-pin-ease),max-height .42s var(--lc-pin-ease);
+}
+.lc-pin.is-open .lc-pin-label{max-width:min(54vw,240px);max-height:4.5em}
+
+/* Plusieurs croquis sur la même coordonnée : un seul pin, qui les liste.
+   Avant, leurs étiquettes se posaient les unes sur les autres et seul le
+   dernier pin dessiné répondait au clic. */
+.lc-pin--multi.is-open .lc-pin-label{
+  max-width:min(62vw,260px);max-height:min(40vh,220px);overflow:auto;
+}
+.lc-pin-item{display:block}
+.lc-pin-item+.lc-pin-item{
+  margin-top:7px;padding-top:7px;
+  border-top:1px solid color-mix(in srgb,var(--lc-pin-ring) 30%,transparent);
+}
+.lc-pin-n{
+  display:block;margin-bottom:7px;padding-bottom:5px;
+  border-bottom:1px solid color-mix(in srgb,var(--lc-pin-ring) 30%,transparent);
+  font-family:"Archivo",system-ui,sans-serif;font-size:10px;
+  letter-spacing:.09em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--lc-pin-ring) 72%,transparent);
+}
+
+/* Le nombre, lisible pin fermé : la pastille dit combien elle porte. */
+.lc-pin--multi .lc-pin-shape{min-width:22px;min-height:22px}
+.lc-pin-compte{
+  position:absolute;inset:0;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Archivo",system-ui,sans-serif;font-size:11px;line-height:1;
+  font-variant-numeric:tabular-nums;color:var(--lc-pin-ring);
+  pointer-events:none;
+}
+.lc-pin.is-open .lc-pin-compte{display:none}
+
+/* L'étiquette ouverte est large : elle passait par-dessus les pins voisins.
+   Le temps qu'elle est ouverte, la carte s'efface derrière elle — les
+   voisins restent cliquables, mais ne se disputent plus la lecture. */
+.leaflet-container.lc-a-un-pin-ouvert .lc-pin:not(.is-open) .lc-pin-shape,
+.leaflet-container.lc-a-un-pin-ouvert .lc-cluster .lc-cluster-bg,
+.leaflet-container.lc-a-un-pin-ouvert .lc-cluster .lc-cluster-n{
+  opacity:.25;transition:opacity .2s var(--lc-pin-ease);
+}
+.leaflet-container.lc-a-un-pin-ouvert .lc-pin:hover .lc-pin-shape,
+.leaflet-container.lc-a-un-pin-ouvert .lc-pin:focus-visible .lc-pin-shape{opacity:1}
+
+.lc-pin-titre,.lc-pin-lieu{
+  display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+  font-family:"Archivo",system-ui,sans-serif;letter-spacing:.01em;
+}
+.lc-pin-titre{font-size:12.5px;line-height:1.25;color:var(--lc-pin-ring)}
+.lc-pin-titre a{color:inherit;text-decoration:none;border-bottom:1px solid currentColor}
+.lc-pin-lieu{
+  margin-top:3px;font-size:11px;line-height:1.2;
+  color:color-mix(in srgb,var(--lc-pin-ring) 72%,transparent);
+}
+
+/* Survol / focus clavier : léger grossissement depuis la pointe, qui reste
+   donc plantée sur la coordonnée. Un pin ouvert ne grossit plus. */
+.lc-pin:hover .lc-pin-shape,
+.lc-pin:focus-visible .lc-pin-shape{transform:translateX(-50%) scale(1.14)}
+.lc-pin.is-open .lc-pin-shape,
+.lc-pin.is-open:hover .lc-pin-shape{transform:translateX(-50%) scale(1)}
+
+.lc-pin:focus-visible{outline:none}
+.lc-pin:focus-visible .lc-pin-bg{outline:2px solid var(--lc-pin-ring);outline-offset:3px}
+
+/* ============================================================
+   Regroupement (markercluster)
+   MarkerCluster.Default.css n'est pas chargée : ses cercles vert / jaune /
+   orange jureraient avec la palette. Voici la pastille du thème, centrée
+   sur la coordonnée (un cluster n'a pas de pointe : il ne désigne pas un
+   lieu précis mais une zone).
+   ============================================================ */
+.lc-cluster{display:block;width:0;height:0;cursor:pointer}
+.lc-cluster-bg,
+.lc-cluster-n{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
+.lc-cluster-bg{
+  border-radius:50%;
+  background:var(--lc-pin);
+  transition:transform .25s var(--lc-pin-ease);
+  filter:
+    drop-shadow(2px 0 0 var(--lc-pin-ring))
+    drop-shadow(-2px 0 0 var(--lc-pin-ring))
+    drop-shadow(0 2px 0 var(--lc-pin-ring))
+    drop-shadow(0 -2px 0 var(--lc-pin-ring))
+    drop-shadow(0 2px 5px rgba(0,0,0,.4));
+}
+.lc-cluster-n{
+  font-family:"Archivo",system-ui,sans-serif;
+  line-height:1;color:var(--lc-pin-ring);
+  font-variant-numeric:tabular-nums;pointer-events:none;
+}
+.lc-cluster--p .lc-cluster-bg{width:30px;height:30px}
+.lc-cluster--m .lc-cluster-bg{width:38px;height:38px}
+.lc-cluster--g .lc-cluster-bg{width:46px;height:46px}
+.lc-cluster--p .lc-cluster-n{font-size:12px}
+.lc-cluster--m .lc-cluster-n{font-size:13px}
+.lc-cluster--g .lc-cluster-n{font-size:14px}
+.lc-cluster:hover .lc-cluster-bg{transform:translate(-50%,-50%) scale(1.08)}
+.lc-cluster:focus-visible{outline:none}
+.lc-cluster:focus-visible .lc-cluster-bg{outline:2px solid var(--lc-pin-ring);outline-offset:3px}
+
+/* Sur la carte de lecture (galerie sombre) le liseré est un peu plus chaud */
+.reader-map .lc-pin{--lc-pin-ring:#e9e2d4}
+
+@media (prefers-reduced-motion:reduce){
+  .lc-pin-shape,.lc-pin-label,.lc-pin-bg,.lc-cluster-bg{transition:none}
+  .leaflet-container.lc-a-un-pin-ouvert .lc-pin:not(.is-open) .lc-pin-shape{transition:none}
+  .lc-pin:hover .lc-pin-shape{transform:translateX(-50%)}
+  .lc-cluster:hover .lc-cluster-bg{transform:translate(-50%,-50%)}
+}
