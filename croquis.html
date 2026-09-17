@@ -742,6 +742,10 @@ section.res{padding:16px 20px 80px;min-width:0}
 .leaflet-popup-content .pm{color:var(--dimmer);font-size:11.5px;margin-bottom:6px}
 .leaflet-popup-content .px{font-family:Spectral;font-weight:300;color:#C9C7C2;max-height:120px;overflow:auto;white-space:pre-wrap}
 .leaflet-popup-content a.pe{display:inline-block;margin-top:8px;color:var(--eu);border-bottom:1px solid var(--dimmer);cursor:pointer}
+.leaflet-popup-content .pgh{font-family:Archivo;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dimmer);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:8px}
+.leaflet-popup-content .pgl{max-height:260px;overflow:auto;padding-right:4px}
+.leaflet-popup-content .pgl .pfiche+.pfiche{border-top:1px solid var(--line);margin-top:10px;padding-top:10px}
+.leaflet-popup-content .pgl .px{max-height:80px}
 .leaflet-container{background:#0E1114}
 .maphelp{font-size:12.5px;color:var(--dim);margin:10px 2px 0;display:flex;gap:16px;flex-wrap:wrap}
 .pk{display:inline-flex;align-items:center;gap:5px}
@@ -1027,6 +1031,25 @@ function fdate(d){if(!d)return'';const[y,m,dd]=d.split('-');return +dd+' '+MOIS[
 
 /* ---------- map ---------- */
 let map=null,layer=null;
+const posKey=o=>o.lat.toFixed(5)+','+o.lon.toFixed(5);
+function fiche(o){
+  const txt=(o.x||'').trim();
+  return `<div class="pfiche">
+    <div class="pt">${esc(o.t)||'sans titre'}</div>
+    <div class="pm">${o.l?'<b style="color:#E8E6E1">'+esc(o.l)+'</b> · ':''}${esc(o.c)}<br>${fdate(o.d)} · ${(PREC[o.p]||PREC['?']).l}${o.f?'<br>'+esc(o.f):''}</div>
+    ${txt?`<div class="px">${esc(txt)}</div>`:'<div class="px" style="font-style:italic;color:#5C636C">croquis sans texte</div>'}
+    ${o.url?`<a class="pe" href="${esc(o.url)}" target="_blank" rel="noopener">Voir le croquis</a><br>`:''}
+    <a class="pe" onclick="openEdit('${o.id}')">Corriger ce croquis</a>
+  </div>`;
+}
+function popupGroupe(g){
+  if(g.length===1) return fiche(g[0]);
+  const l=g.slice().sort((a,b)=>(a.d||'').localeCompare(b.d||''));
+  return `<div class="pgrp">
+    <div class="pgh">${l.length} croquis à cette position</div>
+    <div class="pgl">${l.map(fiche).join('')}</div>
+  </div>`;
+}
 function drawMap(list){
   if(!map){
     map=L.map('map',{worldCopyJump:true}).setView([20,10],2);
@@ -1035,17 +1058,25 @@ function drawMap(list){
   }
   if(layer) layer.remove();
   layer=L.layerGroup().addTo(map);
-  const pts=[];
+  // un croquis = un point, mais plusieurs croquis partagent souvent la même
+  // position (géocodage au lieu ou au carnet) : on les empile dans un seul
+  // marqueur, sinon les pastilles et leurs bulles se recouvrent.
+  const groupes=new Map();
   list.forEach(o=>{
     if(o.lat==null||o.lon==null)return;
+    const k=posKey(o);
+    if(!groupes.has(k))groupes.set(k,[]);
+    groupes.get(k).push(o);
+  });
+  const pts=[];
+  groupes.forEach(g=>{
+    const o=g[0],n=g.length;
     const col=(PREC[o.p]||PREC['?']).c;
-    const m=L.circleMarker([o.lat,o.lon],{radius:4,weight:1,color:'rgba(255,255,255,.45)',fillColor:col,fillOpacity:.85});
-    const txt=(o.x||'').trim();
-    m.bindPopup(`<div class="pt">${esc(o.t)||'sans titre'}</div>
-      <div class="pm">${o.l?'<b style="color:#E8E6E1">'+esc(o.l)+'</b> · ':''}${esc(o.c)}<br>${fdate(o.d)} · ${(PREC[o.p]||PREC['?']).l}${o.f?'<br>'+esc(o.f):''}</div>
-      ${txt?`<div class="px">${esc(txt)}</div>`:'<div class="px" style="font-style:italic;color:#5C636C">croquis sans texte</div>'}
-      ${o.url?`<a class="pe" href="${esc(o.url)}" target="_blank" rel="noopener">Voir le croquis</a><br>`:''}
-      <a class="pe" onclick="openEdit('${o.id}')">Corriger ce croquis</a>`);
+    const m=L.circleMarker([o.lat,o.lon],{
+      radius:n>1?Math.min(4+Math.sqrt(n-1)*1.7,11):4,
+      weight:n>1?1.4:1,color:'rgba(255,255,255,.45)',fillColor:col,fillOpacity:n>1?.7:.85});
+    m.bindPopup(()=>popupGroupe(g),{maxHeight:320,autoPanPadding:[24,24]});
+    if(n>1)m.bindTooltip(n+' croquis',{direction:'top',offset:[0,-4]});
     m.addTo(layer);pts.push([o.lat,o.lon]);
   });
   if(pts.length){try{map.fitBounds(pts,{padding:[30,30],maxZoom:12});}catch(e){}}

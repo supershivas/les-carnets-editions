@@ -106,6 +106,14 @@ recopiés :
 
 ---
 
+## Le site lescarnets.fr
+
+| Dossier | Rôle |
+|---|---|
+| `wordpress/carnets-vignettes/` | Greffon WordPress pour **choisir l'image qui représente chaque carnet** sur l'accueil de lescarnets.fr, au lieu de subir le dernier croquis publié. Voir `wordpress/README.md`. |
+
+---
+
 ## Régénérer le site
 
 ```bash
