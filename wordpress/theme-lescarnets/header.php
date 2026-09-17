@@ -28,5 +28,16 @@ if (!is_single()) : ?>
     }
     ?>
   </nav>
+  <form class="head-search" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
+    <label class="screen-reader-text" for="head-s"><?php echo lescarnets_txt('recherche_label'); ?></label>
+    <input type="search" id="head-s" name="s" value="<?php echo esc_attr(get_search_query()); ?>"
+           placeholder="<?php echo lescarnets_txt_attr('recherche_exemple'); ?>">
+    <button type="submit" aria-label="<?php echo lescarnets_txt_attr('recherche_bouton'); ?>">
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <line x1="12.8" y1="12.8" x2="17.5" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </form>
 </header>
 <?php endif; ?>

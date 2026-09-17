@@ -6,7 +6,7 @@ Le site WordPress n'est pas dans ce dépôt : il tourne chez l'hébergeur, avec 
 | Dossier d'ici | Où il va sur le site | Ce qu'il apporte |
 |---|---|---|
 | `carnets-vignettes/` | extension (`wp-content/plugins/`) | choisir le croquis qui représente chaque carnet sur l'accueil |
-| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.2** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
+| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.3** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
 
 Le thème est maintenant versionné ici : c'est cette copie qui fait foi. Toute retouche se
 fait dans `theme-lescarnets/`, puis on renvoie le thème sur le site.
@@ -98,12 +98,46 @@ La phrase d'accueil et l'explication de la page introuvable acceptent quelques b
 
 Les textes réglés vivent en base (`theme_mod`) : ils survivent au remplacement du thème.
 
+---
+
+## 4. La recherche
+
+**Le problème.** Le site n'avait aucun champ de recherche — la fonction existait dans
+WordPress, rien n'y menait. Et telle quelle, elle ne cherchait que dans le titre et le
+texte : `?s=busua` ne rendait rien, alors que quatre croquis portent Busua comme **lieu**.
+
+**Maintenant :**
+
+- un champ dans l'en-tête, sur toutes les pages (pas en feuilletage, qui n'a pas d'en-tête) ;
+- la recherche regarde **quatre champs** : titre, texte, lieu (`carnet_lieu`) et nom du
+  carnet. Chaque mot tapé doit se retrouver quelque part, pas forcément au même endroit :
+  « café rome » trouve un croquis intitulé « Le café du matin » classé dans Roma. Une
+  recherche entre guillemets reste d'un seul tenant ;
+- une page de résultats à elle (`search.php`) : le compte, la grille, et sous chaque
+  vignette **le carnet et le lieu** — c'est ce qui situe un croquis qu'on ne reconnaît
+  pas au titre. Sans résultat, elle dit ce sur quoi la recherche porte ;
+- la recherche ne rend que des croquis, par pages de 48 ; les pages (À propos, Contact)
+  n'encombrent plus les résultats.
+
+Ses textes sont réglables comme les autres, section *Recherche et erreurs*.
+
+### Un bug corrigé au passage
+
+En 1.2, le titre d'une page de résultats affichait
+« Recherche : https://lescarnets.fr/wp-content/themes/lescarnets ». `get_theme_mod()`
+remplace de lui-même un `%s` trouvé dans une **valeur par défaut** par l'adresse du
+dossier du thème — c'est prévu pour les chemins d'images, et ça mangeait le trou de
+« Recherche : %s ». Le texte d'origine n'est plus passé à `get_theme_mod()` : il sert de
+repli après coup.
+
+---
+
 ### Installer le thème
 
 1. Faire un zip de `theme-lescarnets/` **renommé `lescarnets`** (ou prendre celui qui vous
    a été envoyé) — WordPress se fie au nom du dossier contenu dans l'archive.
 2. **Apparence → Thèmes → Ajouter un thème → Téléverser un thème** → **Installer maintenant**.
 3. WordPress voit qu'il est déjà là et propose **Remplacer l'actuel par le téléversé** :
-   c'est ce qu'il faut. Il affiche au passage 1.1 → 1.2.
-4. Le thème reste actif, rien d'autre à faire. La version passant à 1.2, les navigateurs
+   c'est ce qu'il faut. Il affiche au passage l'ancienne version → 1.3.
+4. Le thème reste actif, rien d'autre à faire. La version passant à 1.3, les navigateurs
    reprennent d'eux-mêmes les fichiers de la carte — pas besoin de vider le cache.

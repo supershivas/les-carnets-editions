@@ -8,6 +8,9 @@ if (!defined('ABSPATH')) exit;
 /* Les textes des pages générées, réglables dans l'admin */
 require_once get_template_directory() . '/inc/textes.php';
 
+/* La recherche : croquis seulement, et elle regarde aussi lieu et carnet */
+require_once get_template_directory() . '/inc/recherche.php';
+
 /* --------------------------------------------------------------
  * Réglages de base du thème
  * ------------------------------------------------------------ */

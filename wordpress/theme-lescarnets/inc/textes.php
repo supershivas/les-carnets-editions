@@ -84,7 +84,7 @@ function lescarnets_textes_defs() {
             'section' => 'chrome',
             'libelle' => 'Suite du pied de page',
             'type'    => 'texte',
-            'defaut'  => '— croquis de voyage, 2002–2019',
+            'defaut'  => '— croquis de voyage depuis 2002',
         ),
 
         /* ---- Barre de tri (accueil et carnets) ----------------------- */
@@ -191,6 +191,32 @@ function lescarnets_textes_defs() {
             'defaut'  => 'Recherche : %s',
             'aide'    => '%s est ce qui a été cherché. Gardez-le.',
         ),
+        'recherche_compte' => array(
+            'section' => 'service',
+            'libelle' => 'Nombre de résultats',
+            'type'    => 'texte',
+            'defaut'  => '%d croquis trouvés',
+            'aide'    => '%d est le nombre de croquis trouvés. Gardez-le.',
+        ),
+        'recherche_compte_un' => array(
+            'section' => 'service',
+            'libelle' => 'Nombre de résultats, au singulier',
+            'type'    => 'texte',
+            'defaut'  => 'un seul croquis trouvé',
+        ),
+        'recherche_vide' => array(
+            'section' => 'service',
+            'libelle' => 'Recherche sans résultat',
+            'type'    => 'texte',
+            'defaut'  => 'Aucun croquis ne répond à cette recherche.',
+        ),
+        'recherche_conseil' => array(
+            'section' => 'service',
+            'libelle' => 'Recherche sans résultat — conseil',
+            'type'    => 'riche',
+            'defaut'  => 'La recherche porte sur le titre, le texte, le lieu et le carnet. '
+                       . 'Essayez un nom de ville, un pays, ou un motif — <em>café</em>, <em>pluie</em>, <em>marché</em>.',
+        ),
         'liste_titre' => array(
             'section' => 'service',
             'libelle' => 'Titre d’une liste sans nom',
@@ -251,10 +277,7 @@ function lescarnets_txt($cle) {
     if (!isset($defs[$cle])) return '';
 
     $def = $defs[$cle];
-    $val = get_theme_mod('lescarnets_txt_' . $cle, $def['defaut']);
-    if (!is_string($val) || '' === trim($val)) {
-        $val = $def['defaut'];   // champ vidé : on revient au texte d'origine
-    }
+    $val = lescarnets_txt_brut($cle, $def);
 
     $args = array_slice(func_get_args(), 1);
     if ($args) {
@@ -273,13 +296,25 @@ function lescarnets_txt($cle) {
         : esc_html($val);
 }
 
+/**
+ * La valeur réglée, ou le texte d'origine — sans échappement ni composition.
+ *
+ * On ne passe JAMAIS le texte d'origine en second argument de
+ * get_theme_mod() : quand une valeur par défaut contient « %s », WordPress y
+ * substitue l'adresse du dossier du thème (c'est prévu pour les chemins
+ * d'images). « Recherche : %s » devenait ainsi
+ * « Recherche : https://lescarnets.fr/wp-content/themes/lescarnets ».
+ */
+function lescarnets_txt_brut($cle, $def) {
+    $val = get_theme_mod('lescarnets_txt_' . $cle, null);
+    return (is_string($val) && '' !== trim($val)) ? $val : $def['defaut'];
+}
+
 /** La même chose, sans balises ni mise en paragraphe : pour un attribut. */
 function lescarnets_txt_attr($cle) {
     $defs = lescarnets_textes_defs();
     if (!isset($defs[$cle])) return '';
-    $val = get_theme_mod('lescarnets_txt_' . $cle, $defs[$cle]['defaut']);
-    if (!is_string($val) || '' === trim($val)) $val = $defs[$cle]['defaut'];
-    return esc_attr(wp_strip_all_tags($val));
+    return esc_attr(wp_strip_all_tags(lescarnets_txt_brut($cle, $defs[$cle])));
 }
 
 /* --------------------------------------------------------------
