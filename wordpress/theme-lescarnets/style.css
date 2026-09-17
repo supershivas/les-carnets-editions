@@ -3,7 +3,7 @@ Theme Name: Les Carnets
 Theme URI: https://lescarnets.fr
 Author: Jérôme Agostini
 Description: Thème sur mesure pour la collection de croquis de voyage — index sur papier, feuilletage en galerie. Conserve les slugs WordPress d'origine.
-Version: 1.4
+Version: 1.5
 Requires at least: 6.1
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -95,6 +95,9 @@ h1,h2,h3{font-weight:400;margin:0}
 /* wp_nav_menu rend une <ul> : sans neutralisation on héritait des puces de
    liste et l'en-tête se disloquait. `flex-wrap` évite aussi que le titre du
    site et le menu se chevauchent sur un écran étroit. */
+/* Menu et loupe ne font qu'un bloc, calé à droite : quand le champ se
+   déplie, c'est le bloc entier qui s'élargit et le menu qui recule. */
+.site-tools{display:flex;align-items:center;gap:22px;margin-left:auto;min-width:0}
 .site-nav{display:flex;flex-wrap:wrap;gap:22px;font-size:14px;color:var(--ink-soft)}
 .site-nav .menu{display:flex;flex-wrap:wrap;gap:22px;list-style:none;margin:0;padding:0}
 .site-nav .menu li{list-style:none}
@@ -105,9 +108,12 @@ h1,h2,h3{font-weight:400;margin:0}
 /* La recherche de l'en-tête : une loupe seule, qui déplie son champ.
    Sans JavaScript (html.no-js), le champ est simplement là, ouvert : la
    recherche marche avant l'animation. */
-.head-search{display:flex;align-items:center;gap:0;flex:0 0 auto}
+.head-search{--hs-h:32px;display:flex;align-items:stretch;gap:0;flex:0 0 auto}
+/* box-sizing et height communs : sans hauteur imposée, le champ se
+   dimensionnait sur sa police et dépassait la loupe de deux pixels. */
 .head-search input[type=search]{
-  font:inherit;font-size:13px;width:clamp(120px,16vw,190px);padding:6px 8px;
+  box-sizing:border-box;height:var(--hs-h);line-height:1;
+  font:inherit;font-size:13px;width:clamp(120px,16vw,190px);padding:0 8px;
   color:var(--ink);background:transparent;
   border:1px solid var(--line);border-right:0;border-radius:2px 0 0 2px;
   -webkit-appearance:none;appearance:none;
@@ -115,8 +121,9 @@ h1,h2,h3{font-weight:400;margin:0}
 .head-search input[type=search]::placeholder{color:var(--ink-soft);opacity:.7}
 .head-search input[type=search]:focus{outline:none;border-color:var(--ink)}
 .head-search .hs-btn{
+  box-sizing:border-box;
   display:flex;align-items:center;justify-content:center;flex:0 0 auto;
-  width:32px;height:31px;padding:0;cursor:pointer;
+  width:var(--hs-h);height:var(--hs-h);padding:0;cursor:pointer;
   color:var(--ink-soft);background:transparent;
   border:1px solid var(--line);border-radius:0 2px 2px 0;
   transition:color .3s,border-color .3s,border-radius .3s;
@@ -139,7 +146,7 @@ h1,h2,h3{font-weight:400;margin:0}
 }
 .has-js .head-search .hs-btn{border-radius:2px}
 .has-js .head-search.is-open input[type=search]{
-  width:clamp(140px,18vw,210px);padding:6px 8px;border-width:1px;border-right-width:0;
+  width:clamp(140px,18vw,210px);padding:0 8px;border-width:1px;border-right-width:0;
   visibility:visible;opacity:1;
   transition:width .32s cubic-bezier(.4,0,.2,1),
              padding .32s cubic-bezier(.4,0,.2,1),
@@ -500,16 +507,14 @@ body.feuilletage{background:var(--gallery);color:var(--gallery-ink);overflow:hid
      seule ligne (4 entrées à 13px tiennent dans 335px). */
   .site-head{flex-direction:column;align-items:flex-start;gap:12px}
   .site-title{font-size:18px}
-  .site-nav{gap:14px;width:100%;font-size:13px}
-  /* En mobile l'en-tête s'empile : la recherche prend sa propre ligne.
-     Repliée, elle n'est que la loupe, alignée à gauche comme le reste ;
-     dépliée, le champ prend toute la largeur disponible. */
-  .head-search{width:100%}
-  .head-search input[type=search]{width:100%;flex:1 1 auto;font-size:16px}
-  .has-js .head-search input[type=search]{flex:0 1 0}
-  .has-js .head-search.is-open input[type=search]{width:auto;flex:1 1 auto}
-  .head-search .hs-btn{width:40px;height:38px}
-  .has-js .head-search.is-open .hs-btn{height:38px}
+  .site-nav{gap:14px;font-size:13px;flex:1 1 auto}
+  /* En mobile l'en-tête s'empile : menu et loupe partagent la même ligne,
+     la loupe à droite. Dépliée, elle pousse le menu comme sur grand écran,
+     et prend la ligne entière si le menu n'y tient plus. */
+  .site-tools{width:100%;gap:14px;flex-wrap:wrap}
+  .head-search{--hs-h:38px;flex:0 0 auto;margin-left:auto}
+  .head-search input[type=search]{font-size:16px}
+  .has-js .head-search.is-open input[type=search]{width:clamp(150px,52vw,260px)}
   .site-nav .menu{gap:14px;width:100%}
   .site-foot{gap:14px 24px}
   .site-foot nav,.site-foot .menu{gap:14px}

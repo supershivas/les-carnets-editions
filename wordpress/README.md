@@ -6,7 +6,7 @@ Le site WordPress n'est pas dans ce dépôt : il tourne chez l'hébergeur, avec 
 | Dossier d'ici | Où il va sur le site | Ce qu'il apporte |
 |---|---|---|
 | `carnets-vignettes/` | extension (`wp-content/plugins/`) | choisir le croquis qui représente chaque carnet sur l'accueil |
-| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.4** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
+| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.5** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
 
 Le thème est maintenant versionné ici : c'est cette copie qui fait foi. Toute retouche se
 fait dans `theme-lescarnets/`, puis on renvoie le thème sur le site.
@@ -108,8 +108,9 @@ texte : `?s=busua` ne rendait rien, alors que quatre croquis portent Busua comme
 
 **Maintenant :**
 
-- **une loupe** dans l'en-tête, sur toutes les pages (pas en feuilletage, qui n'a pas
-  d'en-tête) : au clic, le champ se déplie vers la gauche en un tiers de seconde et prend
+- **une loupe** dans l'en-tête, collée au menu (même écart qu'entre deux entrées), sur
+  toutes les pages sauf le feuilletage, qui n'a pas d'en-tête : au clic, le champ se
+  déplie vers la gauche en un tiers de seconde, poussant le menu devant lui, et prend
   le focus. Échap le referme, un clic ailleurs aussi — mais seulement s'il est vide, pour
   ne pas escamoter une recherche en cours de frappe. Sur une page de résultats il est
   déjà ouvert, portant le mot cherché. Replié, il sort du parcours clavier ;
@@ -141,12 +142,30 @@ repli après coup.
 
 ---
 
+## 5. Placer un point au mètre près
+
+La métabox **Localisation du croquis** est dans la colonne de droite de l'éditeur : 232 px
+de large, de quoi situer une ville, pas un carrefour. Un bouton **Agrandir la carte** la
+passe en plein écran, sous la barre d'admin ; la barre du haut rappelle les coordonnées
+posées et **Terminer (Échap)** revient à l'éditeur.
+
+C'est la **même** carte Leaflet, seulement redimensionnée : rien n'est recréé, le point
+posé et le niveau de zoom sont conservés dans les deux sens. Deux détails l'ont dessinée :
+
+- le centre est relevé avant le redimensionnement et remis après, sinon l'agrandissement
+  décale la vue vers le coin haut-gauche ;
+- l'éditeur de blocs empile ses panneaux dans un contexte à lui : un élément en position
+  fixe laissé dans la métabox passe **sous** la colonne de droite. La carte est donc
+  sortie du document le temps de l'agrandissement, puis remise exactement où elle était.
+
+---
+
 ### Installer le thème
 
 1. Faire un zip de `theme-lescarnets/` **renommé `lescarnets`** (ou prendre celui qui vous
    a été envoyé) — WordPress se fie au nom du dossier contenu dans l'archive.
 2. **Apparence → Thèmes → Ajouter un thème → Téléverser un thème** → **Installer maintenant**.
 3. WordPress voit qu'il est déjà là et propose **Remplacer l'actuel par le téléversé** :
-   c'est ce qu'il faut. Il affiche au passage l'ancienne version → 1.4.
-4. Le thème reste actif, rien d'autre à faire. La version passant à 1.4, les navigateurs
+   c'est ce qu'il faut. Il affiche au passage l'ancienne version → 1.5.
+4. Le thème reste actif, rien d'autre à faire. La version passant à 1.5, les navigateurs
    reprennent d'eux-mêmes les fichiers de la carte — pas besoin de vider le cache.

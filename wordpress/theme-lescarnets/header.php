@@ -17,6 +17,7 @@ if (!is_single()) : ?>
   <a class="site-title" href="<?php echo esc_url(home_url('/')); ?>">
     <?php echo lescarnets_txt('site_titre'); ?> <span><?php echo lescarnets_txt('site_soustitre'); ?></span>
   </a>
+  <div class="site-tools">
   <nav class="site-nav" aria-label="Menu principal">
     <?php
     if (has_nav_menu('principal')) {
@@ -44,5 +45,6 @@ if (!is_single()) : ?>
       </svg>
     </button>
   </form>
+  </div>
 </header>
 <?php endif; ?>

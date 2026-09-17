@@ -46,7 +46,70 @@
   function set(lat, lon) {
     latI.value = lat.toFixed(6);
     lonI.value = lon.toFixed(6);
+    coord();
   }
+
+  /* --------------------------------------------------------------
+   * La carte en grand
+   * ------------------------------------------------------------ */
+  var wrap    = document.getElementById('lc-map-wrap');
+  var ouvrir  = document.getElementById('lc-plein');
+  var fermer  = document.getElementById('lc-plein-fermer');
+  var lecture = document.getElementById('lc-map-coord');
+
+  function coord() {
+    if (!lecture) return;
+    lecture.textContent = (latI.value && lonI.value)
+      ? 'Point : ' + latI.value + ', ' + lonI.value
+      : 'Cliquez sur la carte pour poser le point.';
+  }
+
+  // L'éditeur de blocs empile ses panneaux dans un contexte à lui : un
+  // élément en position fixe laissé dans la métabox passe SOUS la colonne
+  // de droite. On sort donc la carte du document le temps de l'agrandir,
+  // et on la remet exactement où elle était — la carte Leaflet, elle, ne
+  // bouge pas : ni recréée, ni rechargée, le point posé est conservé.
+  var ancre = null;
+
+  function plein(on) {
+    if (!wrap) return;
+
+    if (on && !ancre) {
+      ancre = document.createComment('carte du croquis');
+      wrap.parentNode.insertBefore(ancre, wrap);
+      document.body.appendChild(wrap);
+    } else if (!on && ancre) {
+      ancre.parentNode.insertBefore(wrap, ancre);
+      ancre.parentNode.removeChild(ancre);
+      ancre = null;
+    }
+
+    wrap.classList.toggle('est-plein', on);
+    document.body.classList.toggle('lc-carte-plein', on);
+    if (ouvrir) ouvrir.setAttribute('aria-expanded', on ? 'true' : 'false');
+
+    // Le conteneur a changé de taille : Leaflet ne s'en aperçoit pas seul.
+    // Le centre est relevé AVANT pour être remis après, sinon l'agrandissement
+    // décale la vue vers le coin haut-gauche.
+    var centre = map.getCenter();
+    map.invalidateSize();
+    map.setView(centre, map.getZoom(), { animate: false });
+
+    if (on) {
+      // En grand, on voit assez pour viser : on se rapproche d'un cran si
+      // la vue est encore large, mais jamais au point de perdre le repère.
+      if (marker && map.getZoom() < 15) map.setView(marker.getLatLng(), 15, { animate: false });
+      if (fermer) fermer.focus();
+    } else if (ouvrir) {
+      ouvrir.focus();
+    }
+  }
+
+  ouvrir && ouvrir.addEventListener('click', function () { plein(true); });
+  fermer && fermer.addEventListener('click', function () { plein(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && wrap && wrap.classList.contains('est-plein')) plein(false);
+  });
 
   if (hasLat && hasLon) { place(start[0], start[1]); }
 
@@ -58,6 +121,7 @@
   clear && clear.addEventListener('click', function () {
     if (marker) { map.removeLayer(marker); marker = null; }
     latI.value = ''; lonI.value = '';
+    coord();
   });
 
   // Saisie manuelle dans les champs : la carte suit (coordonnées collées
@@ -72,6 +136,8 @@
   }
   latI.addEventListener('change', fromFields);
   lonI.addEventListener('change', fromFields);
+
+  coord();
 
   // La carte peut s'initialiser masquée (métabox repliée) : on rafraîchit
   setTimeout(function () { map.invalidateSize(); }, 300);

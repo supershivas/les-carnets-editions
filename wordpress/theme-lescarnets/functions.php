@@ -643,7 +643,20 @@ function lescarnets_geo_metabox_html($post) {
       </p>
     <?php endif; ?>
     <p class="lc-aide">Déplacez le pin, ou cliquez sur la carte pour poser le point.</p>
-    <div id="lc-admin-map"></div>
+    <div class="lc-map-wrap" id="lc-map-wrap">
+      <div class="lc-map-barre">
+        <span class="lc-map-coord" id="lc-map-coord" aria-live="polite"></span>
+        <button type="button" class="button lc-map-fermer" id="lc-plein-fermer">Terminer (Échap)</button>
+      </div>
+      <div id="lc-admin-map"></div>
+    </div>
+    <p class="lc-plein-ligne">
+      <button type="button" class="button" id="lc-plein">
+        <span class="dashicons dashicons-editor-expand" aria-hidden="true"></span>
+        Agrandir la carte
+      </button>
+      <span class="lc-plein-note">pour placer le point au mètre près</span>
+    </p>
     <p class="lc-champs">
       <label>Lat<br><input type="text" id="lc-lat" name="lc_lat"
         value="<?php echo esc_attr($lat); ?>" inputmode="decimal" autocomplete="off"></label>

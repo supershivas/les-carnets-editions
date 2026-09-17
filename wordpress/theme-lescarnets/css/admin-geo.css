@@ -7,6 +7,39 @@
   background:#f6f7f7;
 }
 
+/* ------------------------------------------------------------------
+   La carte en grand : poser un point au mètre près dans un cadre de
+   240 px est impossible. Le conteneur passe en position fixe et occupe
+   l'écran ; la carte reste LA MÊME (aucune réinitialisation, donc ni
+   point perdu ni tuiles rechargées), seule sa taille change.
+   ------------------------------------------------------------------ */
+.lc-map-barre{display:none}
+
+.lc-map-wrap.est-plein{
+  position:fixed;inset:0;z-index:160000;
+  display:flex;flex-direction:column;background:#fff;
+}
+/* La barre d'admin reste accessible : la carte commence dessous. */
+body.admin-bar .lc-map-wrap.est-plein{top:32px}
+@media screen and (max-width:782px){
+  body.admin-bar .lc-map-wrap.est-plein{top:46px}
+}
+.lc-map-wrap.est-plein .lc-map-barre{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex:0 0 auto;padding:10px 14px;border-bottom:1px solid #dcdcde;background:#f6f7f7;
+}
+.lc-map-wrap.est-plein .lc-map-coord{
+  font-size:13px;color:#646970;font-variant-numeric:tabular-nums;
+}
+.lc-map-wrap.est-plein #lc-admin-map{
+  flex:1 1 auto;height:auto;margin:0;border:0;border-radius:0;
+}
+body.lc-carte-plein{overflow:hidden}
+
+.lc-plein-ligne{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+.lc-plein-ligne .dashicons{font-size:16px;width:16px;height:16px;margin-top:3px}
+.lc-plein-note{color:#646970;font-size:12px}
+
 /* Le lieu, en légende : c'est une donnée du fonds, affichée et non modifiable */
 .lc-lieu{
   display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 6px;
