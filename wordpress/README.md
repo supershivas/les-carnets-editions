@@ -3,11 +3,13 @@
 Le site WordPress n'est pas dans ce dépôt : il tourne chez l'hébergeur, avec son thème
 `lescarnets`. Ce dossier contient les fichiers à y **déposer**, et la marche à suivre.
 
-| Fichier d'ici | Où il va sur le site | Ce qu'il apporte |
+| Dossier d'ici | Où il va sur le site | Ce qu'il apporte |
 |---|---|---|
 | `carnets-vignettes/` | extension (`wp-content/plugins/`) | choisir le croquis qui représente chaque carnet sur l'accueil |
-| `theme-lescarnets/js/carte-public.js` | `wp-content/themes/lescarnets/js/carte-public.js` | les pins d'une même coordonnée ne se chevauchent plus |
-| `theme-lescarnets/css/pin.css` | `wp-content/themes/lescarnets/css/pin.css` | la mise en forme qui va avec |
+| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.2** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
+
+Le thème est maintenant versionné ici : c'est cette copie qui fait foi. Toute retouche se
+fait dans `theme-lescarnets/`, puis on renvoie le thème sur le site.
 
 ---
 
@@ -60,16 +62,48 @@ croquis, chacun avec son titre cliquable et son lieu. Et pendant qu'une étiquet
 ouverte, les autres pins s'effacent à 25 % : l'étiquette est large, elle ne se lit plus
 par-dessus une forêt de gouttes. Les coordonnées uniques gardent exactement l'aspect d'avant.
 
-### Déposer les deux fichiers
+Les deux fichiers concernés (`js/carte-public.js`, `css/pin.css`) sont dans le thème livré
+plus bas : les poser, c'est installer le thème.
 
-Par **Apparence → Éditeur de fichiers de thème** (le plus court, sans FTP) :
+---
 
-1. Dans la liste de droite, ouvrir `js/carte-public.js`.
-2. Tout sélectionner, coller le contenu de `theme-lescarnets/js/carte-public.js`,
-   **Mettre à jour le fichier**.
-3. Recommencer avec `css/pin.css`.
-4. Recharger `lescarnets.fr/carte/` en vidant le cache — **Ctrl+Maj+R** (⌘+Maj+R sur Mac) :
-   le numéro de version des fichiers n'a pas bougé, le navigateur garde sinon l'ancien.
+## 3. Les textes des pages générées
 
-Si l'éditeur de fichiers est absent (certains hébergeurs le coupent), passer par FTP et
-écraser les deux fichiers aux mêmes emplacements.
+**Le problème.** L'accueil, les pages de carnet, la carte, le feuilletage et la page
+introuvable sont composés par le thème, pas par des articles : leurs textes n'avaient
+aucun champ dans WordPress, ils étaient écrits en dur dans les gabarits.
+
+**Maintenant.** **Apparence → Personnaliser → Textes du site** (ou Apparence → Textes du
+site, qui y mène directement). Sept sections, une par endroit du site :
+
+| Section | Ce qu'on y règle |
+|---|---|
+| Accueil | la phrase du haut, le compte affiché sous chaque continent |
+| En-tête et pied | le titre du site et sa suite en gris, la mention de pied de page |
+| Barre de tri | « trier », « date », « nom » — sur l'accueil et les pages de carnet |
+| Page d'un carnet | fil d'Ariane, compte des croquis, carnet vide, croquis sans titre |
+| Carte générale | « %d croquis situés » |
+| Feuilletage | l'invitation à défiler, le bouton carte, le retour par défaut |
+| Recherche et erreurs | champ de recherche, listes vides, page introuvable |
+
+On écrit dans le champ, l'aperçu à droite suit, on publie. Deux garde-fous :
+
+- un champ vidé **reprend le texte d'origine** — on ne peut pas se retrouver avec du blanc ;
+- les textes à trou (`%d croquis`) supportent qu'on les abîme : trou retiré, la phrase
+  s'affiche sans son nombre ; trou mal recopié, c'est le texte d'origine qui est composé.
+  La page ne casse jamais.
+
+La phrase d'accueil et l'explication de la page introuvable acceptent quelques balises
+(`em`, `strong`, `a`, `br`) ; tout le reste est neutralisé.
+
+Les textes réglés vivent en base (`theme_mod`) : ils survivent au remplacement du thème.
+
+### Installer le thème
+
+1. Faire un zip de `theme-lescarnets/` **renommé `lescarnets`** (ou prendre celui qui vous
+   a été envoyé) — WordPress se fie au nom du dossier contenu dans l'archive.
+2. **Apparence → Thèmes → Ajouter un thème → Téléverser un thème** → **Installer maintenant**.
+3. WordPress voit qu'il est déjà là et propose **Remplacer l'actuel par le téléversé** :
+   c'est ce qu'il faut. Il affiche au passage 1.1 → 1.2.
+4. Le thème reste actif, rien d'autre à faire. La version passant à 1.2, les navigateurs
+   reprennent d'eux-mêmes les fichiers de la carte — pas besoin de vider le cache.

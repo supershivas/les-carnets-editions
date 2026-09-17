@@ -1,0 +1,478 @@
+/*
+Theme Name: Les Carnets
+Theme URI: https://lescarnets.fr
+Author: Jérôme Agostini
+Description: Thème sur mesure pour la collection de croquis de voyage — index sur papier, feuilletage en galerie. Conserve les slugs WordPress d'origine.
+Version: 1.2
+Requires at least: 6.1
+Tested up to: 6.9
+Requires PHP: 7.4
+Text Domain: lescarnets
+*/
+
+/* ============================================================
+   Variables — deux ambiances : papier (index) / galerie (single)
+   ============================================================ */
+:root{
+  --paper:        #EDE9E0;   /* fond papier de l'index */
+  --paper-card:   #F5F2EB;   /* léger relief pour vignettes vides */
+  --ink:          #1B1815;   /* texte principal */
+  --ink-soft:     #6B655C;   /* méta, dates, comptes */
+  --ink-faint:    #A8A196;   /* hors-focus */
+  --line:         #D4CEC2;   /* filets */
+  --gallery:      #17140F;   /* mur de galerie, brun-noir chaud */
+  --gallery-ink:  #F2EEE6;   /* texte sur galerie */
+  --gallery-soft: rgba(242,238,230,.55);
+  --gallery-faint:rgba(242,238,230,.28);
+  --gallery-meta: rgba(242,238,230,.66);  /* dates, méta lisibles */
+  --ease:         cubic-bezier(.7,0,.2,1);
+  --wrap:         1240px;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Archivo",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-weight:400;margin:0}
+
+.voice{font-family:"Spectral",Georgia,serif}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+
+/* Lien d'évitement — hors écran, révélé au focus clavier */
+.skip-link{
+  position:absolute;left:-9999px;top:0;z-index:100;
+  padding:10px 16px;background:var(--ink);color:var(--paper);font-size:14px;
+}
+.skip-link:focus{left:8px;top:8px}
+
+/* Anneau de focus visible partout (navigation clavier) */
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+/* #contenu porte tabindex="-1" pour recevoir le focus du lien d'évitement :
+   pas de cerne au clic souris */
+#contenu:focus{outline:none}
+
+/* ============================================================
+   Formulaire de recherche
+   ============================================================ */
+.searchform{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 28px}
+.searchform label{font-size:13px;color:var(--ink-soft);flex:0 0 100%}
+.searchform input[type=search]{
+  flex:1 1 220px;font:inherit;font-size:15px;padding:8px 10px;
+  color:var(--ink);background:var(--paper-card);
+  border:1px solid var(--line);border-radius:2px;
+}
+.searchform button{
+  font:inherit;font-size:14px;padding:9px 18px;cursor:pointer;
+  color:var(--paper);background:var(--ink);border:1px solid var(--ink);border-radius:2px;
+}
+.searchform button:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+
+/* ============================================================
+   En-tête du site
+   ============================================================ */
+/* `padding-block` et non le raccourci `padding` : .site-head porte aussi la
+   classe .wrap, dont le padding horizontal (clamp(20px,5vw,64px)) était
+   écrasé par le raccourci — en mobile l'en-tête collait aux deux bords. */
+.site-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:24px;padding-block:28px 22px;border-bottom:1px solid var(--line);
+}
+.site-title{font-family:"Spectral",serif;font-size:20px;letter-spacing:.01em;flex:0 1 auto}
+.site-title span{color:var(--ink-soft)}
+/* wp_nav_menu rend une <ul> : sans neutralisation on héritait des puces de
+   liste et l'en-tête se disloquait. `flex-wrap` évite aussi que le titre du
+   site et le menu se chevauchent sur un écran étroit. */
+.site-nav{display:flex;flex-wrap:wrap;gap:22px;font-size:14px;color:var(--ink-soft)}
+.site-nav .menu{display:flex;flex-wrap:wrap;gap:22px;list-style:none;margin:0;padding:0}
+.site-nav .menu li{list-style:none}
+.site-nav .current-menu-item > a{color:var(--ink);border-color:var(--ink)}
+.site-nav a{padding-bottom:2px;border-bottom:1px solid transparent;transition:border-color .3s}
+.site-nav a:hover{border-color:var(--ink)}
+
+/* ============================================================
+   Accueil — continents & destinations
+   ============================================================ */
+.home-intro{
+  max-width:640px;margin:52px 0 8px;
+  font-family:"Spectral",serif;font-size:clamp(22px,3vw,30px);
+  line-height:1.4;color:var(--ink);
+}
+.home-intro em{font-style:italic;color:var(--ink-soft)}
+/* Le texte vient d'un champ de l'admin : il arrive en paragraphes. */
+.home-intro p{margin:0}
+.home-intro p+p{margin-top:.5em}
+.carnet-head .desc p{margin:0}
+.carnet-head .desc p+p{margin-top:.5em}
+
+.continent{padding:56px 0 40px}
+.continent-head{
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  padding-bottom:14px;margin-bottom:26px;border-bottom:1px solid var(--line);
+}
+
+/* barre de tri interactive */
+.sortbar{display:flex;align-items:center;gap:10px;margin:0 0 22px;font-size:13px;color:var(--ink-soft)}
+.sortbar .lbl{color:var(--ink-faint)}
+.sortbar button{
+  font:inherit;color:var(--ink-soft);background:none;border:none;cursor:pointer;
+  padding:2px 0;border-bottom:1px solid transparent;transition:border-color .3s,color .3s;
+}
+.sortbar button:hover{color:var(--ink)}
+.sortbar button.on{color:var(--ink);border-color:var(--ink)}
+.continent-head h2{font-family:"Spectral",serif;font-size:clamp(28px,4vw,44px);line-height:1}
+.continent-head .count{font-size:13px;color:var(--ink-soft);letter-spacing:.02em}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  /* cf. remarque minmax(0,…) plus bas : on borne aussi les cellules */
+  grid-auto-columns:minmax(0,1fr);
+  gap:clamp(14px,2vw,26px);
+}
+.vignette{display:block;min-width:0}
+.vignette .frame{
+  display:block;
+  position:relative;aspect-ratio:1;overflow:hidden;
+  background:var(--paper-card);border:1px solid var(--line);
+}
+.vignette .frame img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 1.1s var(--ease),filter .6s;
+  filter:saturate(.96);
+}
+.vignette:hover .frame img{transform:scale(1.04)}
+.vignette .empty{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-faint);font-size:13px;font-family:"Spectral",serif;font-style:italic;
+}
+.vignette .label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:12px}
+.vignette .label .name{font-family:"Spectral",serif;font-size:18px}
+.vignette .label .n{font-size:12px;color:var(--ink-soft);flex:none}
+
+/* ============================================================
+   Page destination (category) — en-tête + grille de croquis
+   ============================================================ */
+.carnet-head{padding:56px 0 34px;max-width:760px}
+.carnet-head .kicker{font-size:13px;color:var(--ink-soft);margin-bottom:10px}
+.carnet-head h1{font-family:"Spectral",serif;font-size:clamp(38px,6vw,64px);line-height:.98;letter-spacing:-.01em}
+.carnet-head .meta{margin-top:16px;font-size:14px;color:var(--ink-soft)}
+.carnet-head .desc{margin-top:20px;font-family:"Spectral",serif;font-size:19px;line-height:1.5;color:var(--ink)}
+
+.croquis-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:clamp(12px,1.6vw,22px);padding-bottom:80px;
+}
+.croquis-cell{display:block;min-width:0}
+.croquis-cell .frame{display:block;position:relative;aspect-ratio:1;overflow:hidden;background:var(--paper-card);border:1px solid var(--line)}
+.croquis-cell .frame img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s var(--ease)}
+.croquis-cell:hover .frame img{transform:scale(1.04)}
+.croquis-cell .t{margin-top:10px;font-family:"Spectral",serif;font-size:15px;line-height:1.3}
+.croquis-cell .t.mute{color:var(--ink-faint);font-style:italic}
+
+/* Pagination (index.php / archives) — non stylée jusqu'ici */
+.pagination{padding:0 0 80px}
+.pagination .nav-links{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px}
+.pagination .page-numbers{
+  display:inline-block;min-width:34px;padding:6px 10px;text-align:center;
+  color:var(--ink-soft);border:1px solid var(--line);border-radius:2px;
+  transition:color .3s,border-color .3s;
+}
+.pagination a.page-numbers:hover{color:var(--ink);border-color:var(--ink)}
+.pagination .page-numbers.current{color:var(--paper);background:var(--ink);border-color:var(--ink)}
+.pagination .page-numbers.dots{border-color:transparent}
+.screen-reader-text{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.breadcrumb{font-size:13px;color:var(--ink-soft);padding-top:8px}
+.breadcrumb a{border-bottom:1px solid transparent;transition:border-color .3s}
+.breadcrumb a:hover{border-color:var(--ink-soft)}
+.breadcrumb .sep{margin:0 8px;color:var(--ink-faint)}
+
+/* ============================================================
+   Feuilletage (single) — galerie sombre, scroll-snap natif
+   ============================================================ */
+body.feuilletage{background:var(--gallery);color:var(--gallery-ink);overflow:hidden}
+.feuilletage .site-head{display:none}
+
+/* Le conteneur EST le défileur : scroll vertical, accroche douce (libre) */
+.reader{
+  position:fixed;inset:0;background:var(--gallery);
+  overflow-y:scroll;overflow-x:hidden;
+  /* mandatory (et non proximity) : on se cale toujours sur une planche,
+     jamais entre deux. C'est le navigateur qui anime le calage. */
+  scroll-snap-type:y mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+}
+.reader::-webkit-scrollbar{display:none}
+
+/* Marges de défilement aux deux extrémités.
+   Indispensable avec `mandatory` + `scroll-snap-align:center` : centrer la
+   PREMIÈRE planche demanderait un scrollTop négatif, et la DERNIÈRE un
+   scrollTop au-delà de la fin. Ces deux points d'accroche sont donc
+   inatteignables, et le navigateur — obligé de se poser sur un point
+   valide — fuit vers une planche voisine en réécrivant l'URL.
+   Une planche fait 88dvh dans un écran de 100dvh : il manque exactement
+   (100-88)/2 = 6dvh de course à chaque bout. Ces cales les fournissent.
+   Elles ne portent pas scroll-snap-align : ce ne sont pas des cibles. */
+.reader::before,
+.reader::after{content:"";display:block;height:6dvh}
+
+/* Chaque croquis : un peu plus court que l'écran → on aperçoit le voisin */
+.plate{
+  min-height:88dvh;
+  scroll-snap-align:center;
+  /* un geste = une bascule : interdit d'enjamber plusieurs planches */
+  scroll-snap-stop:always;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:6dvh clamp(20px,6vw,96px);
+}
+
+/* Le groupe image + légende. Il se dimensionne sur l'IMAGE, ce qui ferre la
+   légende sur le bord gauche du croquis plutôt que sur un axe arbitraire.
+   La légende est mise à `width:0;min-width:100%` : à 0 elle ne pèse pas dans
+   le calcul de largeur du groupe (sinon un titre long l'élargirait et le
+   croquis cesserait d'être centré à l'écran), et min-width:100% la ramène
+   ensuite à la largeur de l'image. */
+.plate-in{
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:20px;max-width:min(100%,1000px);
+  /* Plancher de largeur : le groupe se dimensionne sur l'image, or une image
+     étroite — ou manquante, et 368 le sont dans ce fonds — le réduisait à
+     une centaine de pixels, comprimant la légende à un mot par ligne.
+     En deçà de ce seuil c'est la légende qui fixe la largeur. */
+  min-width:min(42ch,80vw);
+}
+.plate figure{margin:0;max-width:100%;display:flex;align-items:center;justify-content:center}
+.plate img{max-width:100%;max-height:64dvh;width:auto;object-fit:contain;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+
+/* Légende SOUS l'image, jamais par-dessus, ferrée à gauche */
+.plate .cap{width:0;min-width:100%;text-align:left}
+.plate .cap h1,.plate .cap h2{font-family:"Spectral",serif;font-size:clamp(19px,2.5vw,27px);font-weight:400;line-height:1.15;color:var(--gallery-ink)}
+/* Date : sur un carnet de voyage elle se lit juste après le titre. Elle était
+   en --gallery-faint (opacité .28), quasi invisible. Elle passe à une teinte
+   nettement plus lisible, mais reste petite et espacée : sa discrétion vient
+   de l'échelle, plus de l'effacement — elle ne concurrence donc pas la note. */
+.plate .cap .d{
+  margin-top:7px;font-size:12px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--gallery-meta);
+}
+/* Le lieu n'est PAS en capitales : « 6E CATARACTE » se déchiffrait plus
+   qu'il ne se lisait. Un nom propre a besoin de ses minuscules et de ses
+   accents. C'est la date qui garde le traitement de méta, elle n'a que des
+   chiffres et un mois à lire. */
+.plate .cap .d .lieu{
+  text-transform:none;letter-spacing:0;
+  font-family:"Spectral",Georgia,serif;font-size:14.5px;
+  color:var(--gallery-ink);
+}
+.plate .cap .d .sep{margin:0 .5em;color:var(--gallery-faint)}
+.plate .cap .x{margin-top:14px;font-family:"Spectral",serif;font-size:clamp(14px,1.5vw,16.5px);line-height:1.6;color:var(--gallery-soft);max-width:62ch}
+
+/* Légende longue — la vraie cause du défilement trop vif : une planche plus
+   haute que l'écran sort du cadre de l'accroche (la spec rend alors TOUTE
+   position valide à l'intérieur), et le moindre geste emportait au croquis
+   suivant. On borne donc la note à quelques lignes et on la déplie à la
+   demande : chaque planche tient dans l'écran, l'accroche redevient franche.
+   Une « résistance » au défilement aurait combattu l'accroche native du
+   navigateur — effet de latence — sans régler ce débordement. */
+.plate .cap .x.is-clamped{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;
+}
+/* Note dépliée — SANS barre de défilement.
+   Plutôt que de faire défiler la note dans une boîte (barre visible, et
+   laide), on rend de la place : l'image se réduit le temps de la lecture.
+   La planche garde donc sa hauteur, l'accroche reste franche, et rien ne
+   défile à l'intérieur dans l'immense majorité des cas. */
+.plate-in img{transition:max-height .45s var(--ease)}
+.plate.is-note-open .plate-in img{max-height:34dvh}
+
+/* Filet de sécurité pour les notes vraiment longues sur écran court : on
+   autorise le défilement mais la barre est masquée, et un dégradé de fin
+   signale la suite — il s'effface quand on atteint le bas. */
+.plate .cap .x.is-expanded{
+  max-height:44dvh;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent);
+}
+.plate .cap .x.is-expanded::-webkit-scrollbar{width:0;height:0;display:none}
+.plate .cap .x.is-expanded.at-end{mask-image:none}
+.cap-more{
+  margin-top:8px;padding:0;border:0;background:none;cursor:pointer;
+  font:inherit;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gallery-meta);border-bottom:1px solid var(--gallery-faint);
+  transition:color .3s,border-color .3s;
+}
+.cap-more:hover{color:var(--gallery-ink);border-color:var(--gallery-soft)}
+
+/* Dégradés haut/bas : le croquis voisin s'estompe en faible opacité */
+/* Planche pas encore chargée (chargement progressif) : elle occupe la même
+   hauteur qu'une planche réelle, pour que le défilement, l'accroche et la
+   barre de progression gardent une géométrie juste. */
+.plate.is-stub .stub-mark{
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--gallery-faint);border-top-color:var(--gallery-soft);
+  animation:lc-spin 1s linear infinite;
+}
+@keyframes lc-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.plate.is-stub .stub-mark{animation:none}}
+/* Planche non hydratable (réseau coupé, JS partiel) : lien de secours */
+.stub-fallback{
+  font-size:clamp(16px,2vw,20px);color:var(--gallery-soft);
+  border-bottom:1px solid var(--gallery-faint);padding-bottom:3px;
+}
+.stub-fallback:hover{color:var(--gallery-ink);border-color:var(--gallery-soft)}
+
+.reader-fade{position:fixed;left:0;right:0;height:14dvh;z-index:15;pointer-events:none}
+.reader-fade.top{top:0;background:linear-gradient(var(--gallery),rgba(23,20,15,0))}
+.reader-fade.bottom{bottom:0;background:linear-gradient(rgba(23,20,15,0),var(--gallery))}
+
+/* barre de progression */
+.reader-rail{position:fixed;top:0;right:clamp(16px,3vw,34px);bottom:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;max-height:70dvh;margin:auto 0;overflow:hidden}
+.reader-rail button{width:6px;height:6px;padding:0;border:none;border-radius:50%;background:var(--gallery-faint);cursor:pointer;transition:transform .4s var(--ease),background .4s;flex:none}
+.reader-rail button.on{background:var(--gallery-ink);transform:scale(1.7)}
+
+/* Grand carnet : les points ne tiennent plus dans les 70dvh du rail, on
+   passe à un filet continu à curseur (bascule faite dans feuilletage.js). */
+.reader-rail.is-bar{gap:0;overflow:visible}
+.rail-track{
+  position:relative;width:3px;height:70dvh;
+  border-radius:2px;background:var(--gallery-faint);cursor:pointer;
+}
+.rail-thumb{
+  position:absolute;left:-1px;top:0;width:5px;min-height:24px;
+  border-radius:3px;background:var(--gallery-ink);
+  transition:top .28s var(--ease),height .28s var(--ease);
+}
+.rail-track:focus-visible{outline:2px solid var(--gallery-soft);outline-offset:5px}
+@media (prefers-reduced-motion:reduce){.rail-thumb{transition:none}}
+.reader-count{position:fixed;bottom:clamp(20px,4vh,32px);right:clamp(20px,4vw,40px);z-index:20;font-size:11px;letter-spacing:.06em;color:var(--gallery-faint);font-variant-numeric:tabular-nums}
+
+/* bouton « carte » — visible sur mobile uniquement */
+.reader-map-toggle{
+  position:fixed;z-index:21;left:clamp(16px,4vw,40px);bottom:clamp(48px,8dvh,64px);
+  display:none;align-items:center;gap:6px;
+  padding:7px 12px;border:1px solid var(--gallery-faint);border-radius:20px;
+  background:rgba(23,20,15,.6);color:var(--gallery-soft);font:inherit;font-size:12px;cursor:pointer;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+}
+.reader-map-toggle .dot{width:8px;height:8px;border-radius:50%;background:#a9622f;flex:none}
+
+/* chrome galerie : retour + destination */
+.reader-top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;padding:22px clamp(20px,4vw,40px);pointer-events:none}
+.reader-top a,.reader-top span{pointer-events:auto}
+.reader-top .back{font-size:13px;color:var(--gallery-soft);display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid transparent;transition:border-color .3s;padding-bottom:2px}
+.reader-top .back:hover{border-color:var(--gallery-soft)}
+.reader-hint{position:fixed;bottom:clamp(20px,4vh,32px);left:50%;transform:translateX(-50%);z-index:20;font-size:11px;color:var(--gallery-faint);transition:opacity .6s;text-align:center}
+.reader-hint.hide{opacity:0}
+
+/* ============================================================
+   Cartes (Leaflet)
+   ============================================================ */
+.carte{
+  width:100%;border:1px solid var(--line);border-radius:2px;
+  background:var(--paper-card);
+}
+.carte--carnet{height:min(52vh,460px);margin:0 0 40px}
+.carte--general{height:min(72vh,680px);margin:0 0 40px}
+.carte .leaflet-container{font-family:"Archivo",sans-serif;border-radius:2px}
+.carte a{color:var(--ink);border-bottom:1px solid var(--line)}
+
+/* Fond de carte teinté dans les tons du site (sépia atténué) */
+.carte .leaflet-tile-pane{filter:grayscale(1) sepia(.22) brightness(1.04) contrast(.92) saturate(.8)}
+.reader-map .leaflet-tile-pane{filter:grayscale(1) sepia(.3) brightness(.8) contrast(.95) saturate(.7)}
+
+/* Le pin est décrit dans css/pin.css (partagé avec l'éditeur) */
+
+/* carte de lecture, dans le feuilletage : discrète, en bas à droite */
+.reader-map{
+  position:fixed;z-index:19;right:clamp(16px,3vw,34px);bottom:64px;
+  width:190px;height:150px;border:1px solid rgba(242,238,230,.18);
+  border-radius:3px;overflow:hidden;opacity:0;transform:translateY(8px);
+  pointer-events:none;transition:opacity .5s var(--ease),transform .5s var(--ease);
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  /* Fond de repli : si les tuiles tardent, on voit un cadre sourd plutôt
+     qu'un rectangle noir indistinct du mur de galerie */
+  background:#241f18;
+}
+.reader-map.on{opacity:.92;transform:translateY(0)}
+.reader-map .leaflet-container{background:#0f0d0a}
+@media (max-width:640px){
+  .reader-map{width:130px;height:104px;bottom:56px;right:10px}
+}
+
+/* ============================================================
+   Pages simples (à propos, contact)
+   ============================================================ */
+.page-body{max-width:680px;padding:56px 0 90px}
+.page-body h1{font-family:"Spectral",serif;font-size:clamp(34px,5vw,52px);line-height:1;margin-bottom:28px}
+.page-body p{font-family:"Spectral",serif;font-size:18px;line-height:1.65;margin:0 0 18px}
+.page-body a{border-bottom:1px solid var(--line)}
+
+/* ============================================================
+   Pied de page
+   ============================================================ */
+/* même correction qu'en en-tête : padding-block, pour garder les marges de .wrap */
+.site-foot{border-top:1px solid var(--line);margin-top:40px;padding-block:34px 60px;display:flex;flex-wrap:wrap;gap:18px 40px;align-items:baseline;justify-content:space-between}
+.site-foot .brand{font-family:"Spectral",serif;font-size:15px}
+.site-foot .brand span{color:var(--ink-soft)}
+.site-foot nav{display:flex;flex-wrap:wrap;gap:20px;font-size:13px;color:var(--ink-soft)}
+.site-foot .menu{display:flex;flex-wrap:wrap;gap:20px;list-style:none;margin:0;padding:0}
+.site-foot .menu li{list-style:none}
+.site-foot nav a{border-bottom:1px solid transparent;transition:border-color .3s}
+.site-foot nav a:hover{border-color:var(--ink-soft)}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width:640px){
+  /* En-tête mobile : le titre et le menu se disputaient la largeur, ce qui
+     cassait le titre en deux lignes et laissait le menu en deux rangées
+     dépareillées. On empile : titre pleine largeur, puis le menu sur une
+     seule ligne (4 entrées à 13px tiennent dans 335px). */
+  .site-head{flex-direction:column;align-items:flex-start;gap:12px}
+  .site-title{font-size:18px}
+  .site-nav{gap:14px;width:100%;font-size:13px}
+  .site-nav .menu{gap:14px;width:100%}
+  .site-foot{gap:14px 24px}
+  .site-foot nav,.site-foot .menu{gap:14px}
+  /* minmax(0,1fr) et non 1fr : `1fr` équivaut à minmax(auto,1fr), dont le
+     minimum est le min-content de la cellule. Les déclinaisons d'image du
+     thème n'étant pas générées, WordPress sert les originaux (jusqu'à
+     3000px de large) qui imposaient leur largeur à la colonne : la page
+     débordait à 6036px au lieu de 375. */
+  .grid,.croquis-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .plate{padding:5dvh 18px}
+  .plate-in{gap:16px}
+  .plate .cap .x{font-size:14px;max-height:26dvh;overflow:hidden}
+  .reader-rail{right:8px;gap:5px}
+  .reader-count{bottom:14px;right:14px}
+
+  /* Carte masquée par défaut, ouverte via le bouton « carte » */
+  .reader-map-toggle{display:inline-flex}
+  .reader-map{
+    display:none;position:fixed;opacity:1;transform:none;
+    left:50%;right:auto;margin-left:-42vw;bottom:92px;
+    width:84vw;height:38dvh;
+  }
+  .reader.map-open .reader-map{display:block}
+  .reader.map-open .reader-map-toggle{border-color:var(--gallery-ink);color:var(--gallery-ink)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .reader{scroll-behavior:auto}
+  .vignette .frame img,.croquis-cell .frame img{transition:none}
+}

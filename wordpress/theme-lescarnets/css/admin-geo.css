@@ -1,0 +1,25 @@
+/*
+ * Métabox « Localisation du croquis » — habillage.
+ * Séparé de pin.css : ici le chrome du panneau, là la forme du pin.
+ */
+#lc-admin-map{
+  height:240px;border:1px solid #dcdcde;border-radius:4px;margin-bottom:10px;
+  background:#f6f7f7;
+}
+
+/* Le lieu, en légende : c'est une donnée du fonds, affichée et non modifiable */
+.lc-lieu{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 6px;
+  margin:0 0 10px;padding:8px 10px;
+  background:#f6f7f7;border-left:3px solid #a9622f;border-radius:0 3px 3px 0;
+  font-size:13px;line-height:1.4;
+}
+.lc-lieu .dashicons{color:#a9622f;font-size:16px;width:16px;height:16px;flex:none}
+.lc-lieu strong{font-weight:600;color:#1d2327}
+.lc-lieu-note{flex:0 0 100%;color:#646970;font-size:12px;font-style:italic}
+
+.lc-aide{margin:0 0 8px;color:#646970;font-size:12px}
+
+.lc-champs{display:flex;gap:8px;margin:0}
+.lc-champs label{flex:1;font-size:12px;color:#646970}
+.lc-champs input{width:100%;font-variant-numeric:tabular-nums}
