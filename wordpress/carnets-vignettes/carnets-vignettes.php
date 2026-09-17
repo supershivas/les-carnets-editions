@@ -228,14 +228,74 @@ function carnets_vignettes_traiter_choix() {
 		$message = 'choisi';
 	}
 
-	wp_safe_redirect( carnets_vignettes_url( array( 'carnet' => $carnet, 'fait' => $message ) ) );
+	// Retour à l'écran de tous les carnets : on vient d'en finir un, on
+	// repart de la vue d'ensemble. Le toast dit lequel a changé.
+	wp_safe_redirect( carnets_vignettes_url( array( 'fait' => $message, 'carnet_fait' => $carnet ) ) );
 	exit;
+}
+
+/**
+ * Le toast : ce qui vient d'être fait, dit puis effacé tout seul.
+ *
+ * Une notice WordPress ordinaire s'inscrit en haut de page, là où on ne
+ * regarde plus une fois qu'on a cliqué une image ; le toast vient à l'œil.
+ */
+function carnets_vignettes_toast() {
+	if ( ! isset( $_GET['fait'] ) ) {
+		return;
+	}
+
+	$carnet = isset( $_GET['carnet_fait'] ) ? get_term( (int) $_GET['carnet_fait'], 'category' ) : null;
+	$nom    = ( $carnet && ! is_wp_error( $carnet ) ) ? $carnet->name : '';
+
+	if ( 'defaut' === $_GET['fait'] ) {
+		$texte = $nom
+			? sprintf( '%s reprend son dernier croquis publié.', $nom )
+			: 'Retour au dernier croquis publié.';
+	} else {
+		$texte = $nom
+			? sprintf( 'L\'image du carnet %s a bien été changée.', $nom )
+			: 'Image du carnet enregistrée.';
+	}
+	?>
+	<div id="carnets-toast" role="status" aria-live="polite"><?php echo esc_html( $texte ); ?></div>
+	<style>
+		#carnets-toast{
+			position:fixed;z-index:100050;left:50%;bottom:32px;transform:translate(-50%,12px);
+			max-width:min(92vw,420px);padding:13px 18px;
+			background:#a9622f;color:#f5f2eb;border-radius:6px;
+			font-size:14px;line-height:1.35;box-shadow:0 6px 24px rgba(0,0,0,.28);
+			opacity:0;transition:opacity .25s ease,transform .25s ease;
+		}
+		#carnets-toast.on{opacity:1;transform:translate(-50%,0)}
+		@media (prefers-reduced-motion:reduce){#carnets-toast{transition:none}}
+	</style>
+	<script>
+		(function(){
+			var t = document.getElementById('carnets-toast');
+			if(!t) return;
+			requestAnimationFrame(function(){ t.classList.add('on'); });
+			var partir = function(){ t.classList.remove('on'); setTimeout(function(){ t.remove(); }, 300); };
+			var minuteur = setTimeout(partir, 4500);
+			t.addEventListener('click', function(){ clearTimeout(minuteur); partir(); });
+			// L'adresse garde sinon la trace du message : un rechargement
+			// de la page le ferait réapparaître sans que rien n'ait changé.
+			if (window.history.replaceState) {
+				var u = new URL(window.location.href);
+				u.searchParams.delete('fait');
+				u.searchParams.delete('carnet_fait');
+				window.history.replaceState({}, '', u);
+			}
+		})();
+	</script>
+	<?php
 }
 
 function carnets_vignettes_ecran_liste() {
 	$carnets = carnets_vignettes_carnets();
 
 	echo '<h1>Images des carnets</h1>';
+	carnets_vignettes_toast();
 	echo '<p class="description" style="max-width:46em">Chaque carnet montre une image sur l\'accueil. '
 		. 'Par défaut c\'est le dernier croquis publié — il change donc tout seul. '
 		. 'Choisissez-en une et elle ne bouge plus.</p>';
@@ -254,8 +314,10 @@ function carnets_vignettes_ecran_liste() {
 		foreach ( $liste as $c ) {
 			$image = carnets_vignettes_courante( $c->term_id );
 			$fixe  = (bool) carnets_vignettes_choix( $c->term_id );
+			$vient = isset( $_GET['carnet_fait'] ) && (int) $_GET['carnet_fait'] === $c->term_id;
 			echo '<a href="' . esc_url( carnets_vignettes_url( array( 'carnet' => $c->term_id ) ) ) . '" '
-				. 'style="display:block;text-decoration:none;color:inherit">';
+				. 'style="display:block;text-decoration:none;color:inherit;'
+				. ( $vient ? 'outline:3px solid #a9622f;outline-offset:3px' : '' ) . '">';
 			echo '<span style="display:block;background:#f0f0f1;aspect-ratio:4/3;overflow:hidden">';
 			if ( $image ) {
 				echo wp_get_attachment_image( $image, 'medium', false, array( 'style' => 'width:100%;height:100%;object-fit:cover' ) );
@@ -281,11 +343,6 @@ function carnets_vignettes_ecran_carnet( $term_id ) {
 
 	echo '<h1>' . esc_html( $carnet->name ) . '</h1>';
 	echo '<p><a href="' . esc_url( carnets_vignettes_url() ) . '">← Tous les carnets</a></p>';
-
-	if ( isset( $_GET['fait'] ) ) {
-		$txt = ( 'defaut' === $_GET['fait'] ) ? 'Retour au dernier croquis publié.' : 'Image du carnet enregistrée.';
-		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $txt ) . '</p></div>';
-	}
 
 	echo '<p class="description">Cliquez le croquis qui doit représenter ce carnet sur l\'accueil.</p>';
 

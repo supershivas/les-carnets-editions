@@ -25,8 +25,10 @@ Le site WordPress n'est pas dans ce dépôt : il tourne chez l'hébergeur, avec 
 avec l'image que chacun montre aujourd'hui et la mention *image choisie* ou *dernier publié*.
 
 Cliquer un carnet — Soudan, par exemple — ouvre ses croquis en planche contact. Un clic sur
-l'un d'eux en fait l'image du carnet, et l'accueil le montre aussitôt. Le bouton
-**Revenir au dernier croquis publié** rend la main au comportement d'origine.
+l'un d'eux en fait l'image du carnet : retour immédiat à la liste des carnets, un toast dit
+*L'image du carnet Soudan a bien été changée*, et la vignette du carnet est cerclée d'ocre le
+temps qu'on la regarde. Le bouton **Revenir au dernier croquis publié** rend la main au
+comportement d'origine, avec son propre toast.
 
 Le rappel et le lien vers cet écran sont aussi en bas de l'écran d'édition de la catégorie
 (Articles → Catégories → un carnet → Modifier).
