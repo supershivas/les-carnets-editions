@@ -6,7 +6,7 @@ Le site WordPress n'est pas dans ce dépôt : il tourne chez l'hébergeur, avec 
 | Dossier d'ici | Où il va sur le site | Ce qu'il apporte |
 |---|---|---|
 | `carnets-vignettes/` | extension (`wp-content/plugins/`) | choisir le croquis qui représente chaque carnet sur l'accueil |
-| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.3** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
+| `theme-lescarnets/` | le thème (`wp-content/themes/lescarnets/`) | **le thème complet, version 1.4** : les textes des pages générées réglables dans l'admin, et les pins d'une même coordonnée qui ne se chevauchent plus sur la carte |
 
 Le thème est maintenant versionné ici : c'est cette copie qui fait foi. Toute retouche se
 fait dans `theme-lescarnets/`, puis on renvoie le thème sur le site.
@@ -108,7 +108,16 @@ texte : `?s=busua` ne rendait rien, alors que quatre croquis portent Busua comme
 
 **Maintenant :**
 
-- un champ dans l'en-tête, sur toutes les pages (pas en feuilletage, qui n'a pas d'en-tête) ;
+- **une loupe** dans l'en-tête, sur toutes les pages (pas en feuilletage, qui n'a pas
+  d'en-tête) : au clic, le champ se déplie vers la gauche en un tiers de seconde et prend
+  le focus. Échap le referme, un clic ailleurs aussi — mais seulement s'il est vide, pour
+  ne pas escamoter une recherche en cours de frappe. Sur une page de résultats il est
+  déjà ouvert, portant le mot cherché. Replié, il sort du parcours clavier ;
+- **en mobile**, l'en-tête s'empile : la loupe prend sa propre ligne, et le champ déplié
+  occupe toute la largeur. Sa taille de texte passe à 16 px, en dessous de quoi iOS
+  zoome la page à la mise au point ;
+- sans JavaScript, le champ est simplement là, ouvert : la recherche marche avant
+  l'animation ;
 - la recherche regarde **quatre champs** : titre, texte, lieu (`carnet_lieu`) et nom du
   carnet. Chaque mot tapé doit se retrouver quelque part, pas forcément au même endroit :
   « café rome » trouve un croquis intitulé « Le café du matin » classé dans Roma. Une
@@ -138,6 +147,6 @@ repli après coup.
    a été envoyé) — WordPress se fie au nom du dossier contenu dans l'archive.
 2. **Apparence → Thèmes → Ajouter un thème → Téléverser un thème** → **Installer maintenant**.
 3. WordPress voit qu'il est déjà là et propose **Remplacer l'actuel par le téléversé** :
-   c'est ce qu'il faut. Il affiche au passage l'ancienne version → 1.3.
-4. Le thème reste actif, rien d'autre à faire. La version passant à 1.3, les navigateurs
+   c'est ce qu'il faut. Il affiche au passage l'ancienne version → 1.4.
+4. Le thème reste actif, rien d'autre à faire. La version passant à 1.4, les navigateurs
    reprennent d'eux-mêmes les fichiers de la carte — pas besoin de vider le cache.

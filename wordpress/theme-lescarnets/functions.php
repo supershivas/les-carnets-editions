@@ -73,6 +73,11 @@ function lescarnets_assets() {
         wp_enqueue_style('leaflet-cluster');
     }
 
+    // La loupe de l'en-tête. Pas en feuilletage : l'en-tête y est masqué.
+    if (!is_single()) {
+        wp_enqueue_script('lescarnets-recherche', get_template_directory_uri() . '/js/recherche.js', array(), wp_get_theme()->get('Version'), true);
+    }
+
     // Le tri interactif sur l'accueil et les pages carnet
     if (is_front_page() || is_home() || is_category()) {
         wp_enqueue_script('lescarnets-tri', get_template_directory_uri() . '/js/tri.js', array(), wp_get_theme()->get('Version'), true);

@@ -3,7 +3,7 @@ Theme Name: Les Carnets
 Theme URI: https://lescarnets.fr
 Author: Jérôme Agostini
 Description: Thème sur mesure pour la collection de croquis de voyage — index sur papier, feuilletage en galerie. Conserve les slugs WordPress d'origine.
-Version: 1.3
+Version: 1.4
 Requires at least: 6.1
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -102,7 +102,9 @@ h1,h2,h3{font-weight:400;margin:0}
 .site-nav a{padding-bottom:2px;border-bottom:1px solid transparent;transition:border-color .3s}
 .site-nav a:hover{border-color:var(--ink)}
 
-/* Le champ de recherche de l'en-tête : discret, mais toujours là. */
+/* La recherche de l'en-tête : une loupe seule, qui déplie son champ.
+   Sans JavaScript (html.no-js), le champ est simplement là, ouvert : la
+   recherche marche avant l'animation. */
 .head-search{display:flex;align-items:center;gap:0;flex:0 0 auto}
 .head-search input[type=search]{
   font:inherit;font-size:13px;width:clamp(120px,16vw,190px);padding:6px 8px;
@@ -110,17 +112,43 @@ h1,h2,h3{font-weight:400;margin:0}
   border:1px solid var(--line);border-right:0;border-radius:2px 0 0 2px;
   -webkit-appearance:none;appearance:none;
 }
-.head-search input[type=search]::placeholder{color:var(--dim,var(--ink-soft));opacity:.7}
+.head-search input[type=search]::placeholder{color:var(--ink-soft);opacity:.7}
 .head-search input[type=search]:focus{outline:none;border-color:var(--ink)}
-.head-search button{
-  display:flex;align-items:center;justify-content:center;
+.head-search .hs-btn{
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
   width:32px;height:31px;padding:0;cursor:pointer;
   color:var(--ink-soft);background:transparent;
   border:1px solid var(--line);border-radius:0 2px 2px 0;
+  transition:color .3s,border-color .3s,border-radius .3s;
 }
-.head-search button:hover{color:var(--ink);border-color:var(--ink)}
-.head-search button svg{width:17px;height:17px}
-.head-search input[type=search]:focus + button{border-color:var(--ink)}
+.head-search .hs-btn:hover{color:var(--ink);border-color:var(--ink)}
+.head-search .hs-btn svg{width:17px;height:17px}
+.head-search input[type=search]:focus + .hs-btn{border-color:var(--ink)}
+
+/* Replié : le champ n'occupe plus rien et sort du parcours clavier
+   (visibility, pas display : une largeur ne s'anime pas depuis display:none).
+   La bordure est mise à zéro elle aussi, sinon deux traits subsistent à
+   gauche de la loupe. */
+.has-js .head-search input[type=search]{
+  width:0;padding-left:0;padding-right:0;border-width:0;
+  visibility:hidden;opacity:0;
+  transition:width .32s cubic-bezier(.4,0,.2,1),
+             padding .32s cubic-bezier(.4,0,.2,1),
+             opacity .2s ease,
+             visibility 0s linear .32s;
+}
+.has-js .head-search .hs-btn{border-radius:2px}
+.has-js .head-search.is-open input[type=search]{
+  width:clamp(140px,18vw,210px);padding:6px 8px;border-width:1px;border-right-width:0;
+  visibility:visible;opacity:1;
+  transition:width .32s cubic-bezier(.4,0,.2,1),
+             padding .32s cubic-bezier(.4,0,.2,1),
+             opacity .22s ease .06s,
+             visibility 0s;
+}
+.has-js .head-search.is-open .hs-btn{border-radius:0 2px 2px 0}
+
+/* Sous une vignette de résultat : d'où vient ce croquis. */
 
 /* Sous une vignette de résultat : d'où vient ce croquis. */
 .croquis-cell .ctx{
@@ -353,7 +381,9 @@ body.feuilletage{background:var(--gallery);color:var(--gallery-ink);overflow:hid
   animation:lc-spin 1s linear infinite;
 }
 @keyframes lc-spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.plate.is-stub .stub-mark{animation:none}}
+@media (prefers-reduced-motion:reduce){
+  .has-js .head-search input[type=search],
+  .has-js .head-search.is-open input[type=search]{transition:none}.plate.is-stub .stub-mark{animation:none}}
 /* Planche non hydratable (réseau coupé, JS partiel) : lien de secours */
 .stub-fallback{
   font-size:clamp(16px,2vw,20px);color:var(--gallery-soft);
@@ -471,8 +501,15 @@ body.feuilletage{background:var(--gallery);color:var(--gallery-ink);overflow:hid
   .site-head{flex-direction:column;align-items:flex-start;gap:12px}
   .site-title{font-size:18px}
   .site-nav{gap:14px;width:100%;font-size:13px}
+  /* En mobile l'en-tête s'empile : la recherche prend sa propre ligne.
+     Repliée, elle n'est que la loupe, alignée à gauche comme le reste ;
+     dépliée, le champ prend toute la largeur disponible. */
   .head-search{width:100%}
-  .head-search input[type=search]{width:100%}
+  .head-search input[type=search]{width:100%;flex:1 1 auto;font-size:16px}
+  .has-js .head-search input[type=search]{flex:0 1 0}
+  .has-js .head-search.is-open input[type=search]{width:auto;flex:1 1 auto}
+  .head-search .hs-btn{width:40px;height:38px}
+  .has-js .head-search.is-open .hs-btn{height:38px}
   .site-nav .menu{gap:14px;width:100%}
   .site-foot{gap:14px 24px}
   .site-foot nav,.site-foot .menu{gap:14px}
